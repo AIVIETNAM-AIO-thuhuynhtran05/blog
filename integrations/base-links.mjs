@@ -15,8 +15,9 @@ export default function baseLinks(base) {
         const link = new RegExp(`(\\s(?:href|src)=["'])/(?!/|${base.slice(1)}/_astro/)`, 'g');
         const files = await readdir(root, { recursive: true });
         for (const file of files.filter((f) => f.endsWith('.html'))) {
-          // Dashboard là file độc lập, không thuộc phần Astro build
-          if (file.replaceAll('\\', '/').startsWith('projects/')) continue;
+          // Dashboard trong projects/<tên>/ là file độc lập, không thuộc phần Astro build.
+          // Riêng projects/index.html là trang của blog nên vẫn phải sửa.
+          if (/^projects\/.+\//.test(file.replaceAll('\\', '/'))) continue;
           const path = join(root, file);
           const html = await readFile(path, 'utf8');
           await writeFile(path, html.replace(link, `$1${base}/`));
