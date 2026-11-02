@@ -1,0 +1,43 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHead from '../components/SectionHead.astro';
+import { extraTracks, levelTracks, projects } from '../data/learning';
+import { getEntries } from '../lib/content';
+
+const entries = await getEntries();
+
+function countLabel(slug: string) {
+  const nEntries = entries.filter((e) => e.track === slug).length;
+  const nProjects = projects.filter((p) => p.track === slug).length;
+  return [nEntries && `${nEntries} bài`, nProjects && `${nProjects} project`].filter(Boolean).join(' · ') || 'Chưa có bài';
+}
+---
+<Base title="Các mục" description="Các mục kiến thức data, từ dễ đến khó.">
+  <header class="page-head">
+    <h1>Các mục</h1>
+    <p>Từ dễ đến khó, cho người mới bắt đầu học data.</p>
+  </header>
+  <ol class="stairs">
+    {levelTracks.map((t, i) => (
+      <li style={`--i:${i};`}>
+        <a href={`/${t.slug}`}>
+          <span class="stair-level">Level {i + 1}</span>
+          <span class="stair-title">{t.title}</span>
+          <span class="stair-short">{t.short}</span>
+          <span class="stair-count">{countLabel(t.slug)}</span>
+        </a>
+      </li>
+    ))}
+  </ol>
+
+  <section class="track-projects">
+    <SectionHead title="Ngoài lộ trình data" />
+    {extraTracks.map((t) => (
+      <a class="extra-track" href={`/${t.slug}`}>
+        <span class="stair-title">{t.title}</span>
+        <span class="stair-short">{t.summary}</span>
+        <span class="stair-count">{countLabel(t.slug)}</span>
+      </a>
+    ))}
+  </section>
+</Base>

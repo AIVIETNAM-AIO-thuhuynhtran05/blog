@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+import Feed from '../components/Feed.astro';
+import TrackPills from '../components/TrackPills.astro';
+import { getEntries } from '../lib/content';
+
+const entries = await getEntries();
+---
+<Base title="Lưu trữ" description="Tất cả bài viết và ghi chú, mới nhất trước.">
+  <header class="page-head">
+    <h1>Lưu trữ</h1>
+    <p>{entries.length} bài, mới nhất trước.</p>
+  </header>
+  <TrackPills />
+  <Feed entries={entries} />
+</Base>

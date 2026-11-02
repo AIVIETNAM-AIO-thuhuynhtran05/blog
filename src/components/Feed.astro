@@ -1,0 +1,33 @@
+---
+import { getTrack } from '../data/learning';
+import { formatDate, formatMonth, type Entry } from '../lib/content';
+
+const { entries } = Astro.props as { entries: Entry[] };
+
+// Các bài đã xếp mới nhất trước, nên chỉ cần gom theo tháng liền kề
+const months: { label: string; entries: Entry[] }[] = [];
+for (const e of entries) {
+  const label = formatMonth(e.date);
+  if (months.at(-1)?.label !== label) months.push({ label, entries: [] });
+  months.at(-1)!.entries.push(e);
+}
+---
+<div class="feed">
+  {months.map((m) => (
+    <section class="feed-month">
+      <h2 class="feed-month-label">{m.label}</h2>
+      {m.entries.map((e) => (
+        <article class="feed-item">
+          <div class="feed-text">
+            <h3><a href={e.href}>{e.title}</a></h3>
+            <p class="feed-subtitle">{e.subtitle}</p>
+            <p class="feed-meta">
+              <time datetime={e.date.toISOString()}>{formatDate(e.date)}</time> • {getTrack(e.track).title} • {e.kind}
+            </p>
+          </div>
+          {e.cover && <a class="feed-cover" href={e.href} tabindex="-1" aria-hidden="true"><img src={e.cover} alt="" loading="lazy" /></a>}
+        </article>
+      ))}
+    </section>
+  ))}
+</div>

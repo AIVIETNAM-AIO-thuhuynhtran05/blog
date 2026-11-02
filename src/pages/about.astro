@@ -1,0 +1,32 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../site.config';
+
+const { email, github, linkedin } = site.socials;
+const hasContact = email || github || linkedin;
+---
+<Base title="Giới thiệu" description={`Về ${site.author} và blog này.`}>
+  <header class="page-head">
+    <h1>Giới thiệu</h1>
+  </header>
+  <img
+    class="about-photo"
+    src="/images/anh-thu/buoc-di.jpg"
+    alt="Ảnh chụp từ trên xuống: đôi chân đi giày búp bê đang bước trên mặt đường, bóng đổ dài trong nắng."
+  />
+  <div class="prose">
+    <p>{site.intro}</p>
+    <p>{site.tagline}</p>
+    <p>Những gì mình học được chia theo <a href="/muc">từng mục</a>, từ dễ đến khó: Excel, SQL, Power BI, Machine Learning và Business Domain. Ngoài ra mình cũng ghi lại những gì học được từ chương trình CFA.</p>
+    {hasContact && (
+      <>
+        <h2>Liên hệ</h2>
+        <ul>
+          {email && <li><a href={`mailto:${email}`}>{email}</a></li>}
+          {github && <li><a href={github}>GitHub</a></li>}
+          {linkedin && <li><a href={linkedin}>LinkedIn</a></li>}
+        </ul>
+      </>
+    )}
+  </div>
+</Base>

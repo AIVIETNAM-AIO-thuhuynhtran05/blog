@@ -1,0 +1,12 @@
+---
+import { tracks } from '../data/learning';
+import { pagePath } from '../lib/paths';
+
+const path = pagePath(Astro.url);
+---
+<nav class="pills" aria-label="Lọc theo mục">
+  <a href="/archive" aria-current={path === '' || path === '/archive' ? 'page' : undefined}>Tất cả</a>
+  {tracks.map((t) => (
+    <a href={`/${t.slug}`} aria-current={path === `/${t.slug}` ? 'page' : undefined}>{t.title}</a>
+  ))}
+</nav>

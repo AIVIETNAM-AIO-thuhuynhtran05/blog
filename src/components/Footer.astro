@@ -1,0 +1,20 @@
+---
+import { site } from '../site.config';
+
+const { wide = false } = Astro.props as { wide?: boolean };
+const { email, github, linkedin } = site.socials;
+const links = [
+  { label: 'RSS', href: '/rss.xml' },
+  email && { label: 'Mail', href: `mailto:${email}` },
+  github && { label: 'GitHub', href: github },
+  linkedin && { label: 'LinkedIn', href: linkedin },
+].filter(Boolean) as { label: string; href: string }[];
+---
+<footer class="site-footer">
+  <div class:list={['wrap', 'footer-row', { 'wrap-wide': wide }]}>
+    <span>© {new Date().getFullYear()} {site.author}</span>
+    <span class="footer-links">
+      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    </span>
+  </div>
+</footer>

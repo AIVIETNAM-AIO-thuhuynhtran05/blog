@@ -1,0 +1,16 @@
+---
+import { getTrack, levelTracks } from '../data/learning';
+import type { Entry } from '../lib/content';
+
+// Bài chưa có ảnh thì dùng ảnh bìa chữ, đậm dần theo level của mục
+const { entry, fit = 'cover' } = Astro.props as { entry: Entry; fit?: 'cover' | 'contain' };
+const level = levelTracks.findIndex((t) => t.slug === entry.track);
+---
+{entry.cover ? (
+  <img class:list={['cover', `cover-${fit}`]} src={entry.cover} alt="" loading="lazy" />
+) : (
+  <span class="cover cover-tile" style={`--i:${Math.max(level, 0)};`}>
+    <span class="cover-tile-track">{getTrack(entry.track).title}</span>
+    <span class="cover-tile-kind">{entry.kind}</span>
+  </span>
+)}

@@ -1,0 +1,24 @@
+---
+import Base from '../../layouts/Base.astro';
+import Feed from '../../components/Feed.astro';
+import { getPosts, postEntry } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  const tags = [...new Set(posts.flatMap((p) => p.data.tags))];
+  return tags.map((tag) => ({
+    params: { tag },
+    props: { posts: posts.filter((p) => p.data.tags.includes(tag)) },
+  }));
+}
+
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+---
+<Base title={`#${tag}`}>
+  <header class="page-head">
+    <h1>#{tag}</h1>
+    <p>{posts.length} bài viết</p>
+  </header>
+  <Feed entries={posts.map(postEntry)} />
+</Base>

@@ -1,0 +1,17 @@
+---
+import Cover from './Cover.astro';
+import { getTrack } from '../data/learning';
+import { formatDate, type Entry } from '../lib/content';
+
+const { entry } = Astro.props as { entry: Entry };
+---
+<article class="pcard">
+  <a class="pcard-cover" href={entry.href} tabindex="-1" aria-hidden="true"><Cover entry={entry} /></a>
+  <div class="pcard-text">
+    <h3><a href={entry.href}>{entry.title}</a></h3>
+    <p class="pcard-subtitle">{entry.subtitle}</p>
+    <p class="feed-meta">
+      <time datetime={entry.date.toISOString()}>{formatDate(entry.date)}</time> • {getTrack(entry.track).title}
+    </p>
+  </div>
+</article>

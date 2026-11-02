@@ -1,0 +1,23 @@
+---
+import { render } from 'astro:content';
+import Article from '../../layouts/Article.astro';
+import { getTrack } from '../../data/learning';
+import { formatDate, getTils } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const items = await getTils();
+  return items.map((item) => ({ params: { slug: item.id }, props: { item } }));
+}
+
+const { item } = Astro.props;
+const { Content } = await render(item);
+---
+<Article title={item.data.title} description={item.data.description}>
+  <Fragment slot="meta">
+    <a class="entry-track" href={`/${item.data.track}`}>{getTrack(item.data.track).title}</a>
+    <time datetime={item.data.date.toISOString()}>{formatDate(item.data.date)}</time>
+    <span>Ghi chú · {item.data.category}</span>
+  </Fragment>
+  <Content />
+  <a slot="after" class="back" href={`/${item.data.track}`}>← {getTrack(item.data.track).title}</a>
+</Article>

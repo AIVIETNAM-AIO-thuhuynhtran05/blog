@@ -1,0 +1,12 @@
+---
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { projects } from '../data/learning';
+---
+<Base title="Project" description="Các project phân tích dữ liệu đã làm trong quá trình học.">
+  <header class="page-head">
+    <h1>Project</h1>
+    <p>Những gì mình đã làm ra trong lúc học.</p>
+  </header>
+  {projects.map((p) => <ProjectCard project={p} />)}
+</Base>

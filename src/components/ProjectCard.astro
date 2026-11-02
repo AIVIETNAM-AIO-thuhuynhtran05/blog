@@ -1,0 +1,10 @@
+---
+const { project } = Astro.props as {
+  project: { title: string; summary: string; links: { label: string; href: string }[] };
+};
+---
+<div class="card">
+  <h3>{project.title}</h3>
+  <p>{project.summary}</p>
+  <div class="card-links">{project.links.map((l) => <a href={l.href}>{l.label} →</a>)}</div>
+</div>

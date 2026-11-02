@@ -1,0 +1,10 @@
+<button class="theme-btn" type="button" data-theme-toggle title="Đổi sáng/tối" aria-label="Đổi giao diện sáng hoặc tối">
+  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18Z" fill="currentColor" /><circle cx="12" cy="12" r="9" /></svg>
+</button>
+
+<script>
+  document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
+    const dark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
+  });
+</script>
