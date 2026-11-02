@@ -73,9 +73,8 @@ export function getTrack(slug: string) {
 // Lời mở đầu hiện trên bảng lộ trình, theo slug. Mỗi chuỗi là một đoạn văn.
 export const trackIntros: Record<string, string[]> = {
   'xac-suat-thong-ke': [
-    'Mình từng học xác suất thống kê mà không hiểu học để làm gì, từ mấy mẫu dân số hồi học Y cho tới lúc học IT.',
-    'Đến lúc hiểu ra thì lại tiếc. Nhưng sống trong tiếc nuối mãi thì có được gì đâu, nên mình học lại lần nữa.',
-    'Giờ mình vẫn wondering là học để bỏ vào các mô hình học máy hay gì, và mình đang đi tìm câu trả lời.',
+    'Mình từng học xác suất thống kê mà không hiểu học để làm gì, từ mấy mẫu dân số hồi học Y cho tới lúc học IT. Hồi đó mình wondering là học để bỏ vào các mô hình học máy hay gì.',
+    'Đến lúc hiểu ra thì lại tiếc. Nhưng sống trong tiếc nuối mãi thì có được gì đâu, nên mình học lại lần nữa, và giờ mình đang đi tìm câu trả lời.',
   ],
   powerbi: [
     'Power BI được mình xem như những lần đầu mình tập viết chữ. Mình chưa định hình được một chữ cụ thể là như nào, cần có gì, mình cứ ghi những gì mình thích, mình có thể, và có thể nó rất nguệch ngoạc.',
