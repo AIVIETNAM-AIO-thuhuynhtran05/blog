@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import Feed from '../components/Feed.astro';
+import SectionHead from '../components/SectionHead.astro';
+import { bookSections, bookTrack } from '../data/learning';
+import { getEntries } from '../lib/content';
+
+const entries = (await getEntries()).filter((e) => e.track === bookTrack.slug);
+const others = entries.filter((e) => !bookSections.includes(e.section ?? ''));
+---
+<Base title={bookTrack.title} description={bookTrack.summary}>
+  <header class="page-head">
+    <h1>{bookTrack.title}</h1>
+  </header>
+
+  {bookSections.map((section) => {
+    const books = entries.filter((e) => e.section === section);
+    return (
+      <section class="book-section">
+        <SectionHead title={section} />
+        {books.length > 0 ? <Feed entries={books} /> : <p class="empty">Chưa có bài.</p>}
+      </section>
+    );
+  })}
+
+  {others.length > 0 && <Feed entries={others} />}
+</Base>

@@ -41,4 +41,5 @@ export const nav = [
   { href: '/', label: 'Trang chủ' },
   { href: '/muc', label: 'Các mục' },
   { href: '/projects', label: 'Project' },
+  { href: '/sach-minh-doc', label: 'Sách mình đọc' },
 ];

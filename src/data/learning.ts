@@ -64,10 +64,20 @@ export const extraTracks = [
 
 export const tracks = [...levelTracks, ...extraTracks];
 
-export const trackSlugs = tracks.map((t) => t.slug) as [string, ...string[]];
+// Sách có tab riêng nên không nằm trong các mục. Bài khai báo `section` bằng một trong các phần dưới đây.
+export const bookTrack = {
+  slug: 'sach-minh-doc',
+  short: 'Những cuốn sách mình đọc.',
+  title: 'Những cuốn sách mình đọc',
+  summary: 'Những cuốn sách mình đọc.',
+};
+
+export const bookSections = ['DA - IT', 'Life'];
+
+export const trackSlugs = [...tracks, bookTrack].map((t) => t.slug) as [string, ...string[]];
 
 export function getTrack(slug: string) {
-  return tracks.find((t) => t.slug === slug)!;
+  return [...tracks, bookTrack].find((t) => t.slug === slug)!;
 }
 
 // Lời mở đầu hiện trên bảng lộ trình, theo slug. Mỗi chuỗi là một đoạn văn.

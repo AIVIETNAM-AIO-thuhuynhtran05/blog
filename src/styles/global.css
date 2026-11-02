@@ -1001,6 +1001,11 @@ img.cover-contain {
   .motto {
     font-size: 0.7rem;
   }
+
+  .tabs {
+    gap: 0.6rem;
+    font-size: 0.84rem;
+  }
 }
 
 /* Máy tính: nội dung bên trái, các mục và project bên phải */
