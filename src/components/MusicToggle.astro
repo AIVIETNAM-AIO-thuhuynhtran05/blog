@@ -1,0 +1,31 @@
+---
+import { site } from '../site.config';
+
+const { title, artist, youtubeId, start, end } = site.music;
+---
+<button class="theme-btn music-btn" type="button" data-music-toggle aria-pressed="false" aria-controls="music-player" title={`Nghe nhạc: ${title}`} aria-label={`Mở hoặc đóng trình phát nhạc: ${title} của ${artist}`}>
+  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" /></svg>
+</button>
+<div class="music-player" id="music-player" data-music-player data-src={`https://www.youtube-nocookie.com/embed/${youtubeId}?start=${start}&end=${end}&autoplay=1&playsinline=1&rel=0`} data-title={`${title} của ${artist}`} hidden></div>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>('[data-music-toggle]')!;
+  const player = document.querySelector<HTMLElement>('[data-music-player]')!;
+
+  // Chỉ tải trình phát của YouTube khi người đọc bấm mở, để trang nhẹ và không gửi dữ liệu sang YouTube khi chưa cần
+  button.addEventListener('click', () => {
+    const open = player.hidden;
+    if (open) {
+      const frame = document.createElement('iframe');
+      frame.src = player.dataset.src!;
+      frame.title = player.dataset.title!;
+      frame.allow = 'autoplay; encrypted-media; picture-in-picture';
+      frame.referrerPolicy = 'strict-origin-when-cross-origin';
+      player.append(frame);
+    } else {
+      player.replaceChildren();
+    }
+    player.hidden = !open;
+    button.setAttribute('aria-pressed', String(open));
+  });
+</script>

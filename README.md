@@ -40,7 +40,9 @@ draft: true
 
 `description` là phụ đề hiện dưới tiêu đề. `cover` là ảnh bìa, không bắt buộc; bài không có ảnh sẽ dùng ảnh bìa chữ theo mục. `featured: true` ghim bài vào ô lớn giữa trang chủ, chỉ nên đặt cho một bài.
 
-`track` quyết định bài nằm ở mục nào: `excel`, `sql`, `powerbi`, `machine-learning`, `business` hoặc `cfa`. Bài sẽ tự hiện ở trang của mục đó, ví dụ `/sql`.
+`track` quyết định bài nằm ở mục nào: `excel`, `sql`, `data-transformation`, `powerbi`, `machine-learning`, `business`, `soft-skill` hoặc `cfa`. Bài sẽ tự hiện ở trang của mục đó, ví dụ `/sql`.
+
+Với mục có bảng lộ trình, thêm `section: 'Tên nhóm'` để bài hiện đúng ở nhóm đó trong bảng. Tên nhóm phải giống y như `group` trong `roadmaps` ở `src/data/learning.ts`; bài không có `section` hoặc gõ sai tên sẽ hiện ở dưới bảng.
 
 Ảnh đặt trong `public/images/` rồi chèn bằng `![mô tả](/images/ten-anh.png)`. Công thức viết bằng `$...$` hoặc `$$...$$`.
 

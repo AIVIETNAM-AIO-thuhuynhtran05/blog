@@ -1,6 +1,7 @@
 ---
 import 'katex/dist/katex.min.css';
 import Base from './Base.astro';
+import Comments from '../components/Comments.astro';
 import { site } from '../site.config';
 
 const { title, description, type = 'article' } = Astro.props as {
@@ -19,5 +20,6 @@ const { title, description, type = 'article' } = Astro.props as {
     <slot name="toc" />
     <div class="prose"><slot /></div>
     <slot name="after" />
+    <Comments />
   </article>
 </Base>

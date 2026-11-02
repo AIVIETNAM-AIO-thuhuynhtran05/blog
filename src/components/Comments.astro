@@ -1,0 +1,46 @@
+---
+import { site } from '../site.config';
+
+const { repo, repoId, categoryId, category } = site.comments;
+---
+{categoryId && (
+  <section class="comments" data-repo={repo} data-repo-id={repoId} data-category={category} data-category-id={categoryId}>
+    <h2>Góp ý</h2>
+    <p>Bạn thấy chỗ nào chưa đúng hay muốn trao đổi thêm thì để lại góp ý cho mình nha. Cần đăng nhập GitHub để bình luận.</p>
+    <div class="giscus"></div>
+  </section>
+)}
+
+<script>
+  const section = document.querySelector<HTMLElement>('.comments');
+  if (section) {
+    const theme = () => (document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+    const script = document.createElement('script');
+    script.src = 'https://giscus.app/client.js';
+    script.crossOrigin = 'anonymous';
+    script.async = true;
+    Object.entries({
+      repo: section.dataset.repo!,
+      repoId: section.dataset.repoId!,
+      category: section.dataset.category!,
+      categoryId: section.dataset.categoryId!,
+      mapping: 'pathname',
+      strict: '1',
+      reactionsEnabled: '1',
+      emitMetadata: '0',
+      inputPosition: 'top',
+      theme: theme(),
+      lang: 'vi',
+      loading: 'lazy',
+    }).forEach(([key, value]) => (script.dataset[key] = value));
+    section.append(script);
+
+    // Đổi sáng/tối trên blog thì khung góp ý đổi theo
+    new MutationObserver(() => {
+      document.querySelector<HTMLIFrameElement>('iframe.giscus-frame')?.contentWindow?.postMessage(
+        { giscus: { setConfig: { theme: theme() } } },
+        'https://giscus.app',
+      );
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  }
+</script>

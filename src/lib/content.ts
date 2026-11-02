@@ -19,18 +19,19 @@ export type Entry = {
   date: Date;
   href: string;
   track: string;
+  section?: string;
   kind: 'Bài viết' | 'Ghi chú';
   featured?: boolean;
 };
 
 export function postEntry(p: CollectionEntry<'posts'>): Entry {
-  const { title, description, cover, date, track, featured } = p.data;
-  return { title, subtitle: description, cover, date, track, featured, href: `/blog/${p.id}`, kind: 'Bài viết' };
+  const { title, description, cover, date, track, section, featured } = p.data;
+  return { title, subtitle: description, cover, date, track, section, featured, href: `/blog/${p.id}`, kind: 'Bài viết' };
 }
 
 export function tilEntry(t: CollectionEntry<'til'>): Entry {
-  const { title, description, cover, date, track } = t.data;
-  return { title, subtitle: description, cover, date, track, href: `/til/${t.id}`, kind: 'Ghi chú' };
+  const { title, description, cover, date, track, section } = t.data;
+  return { title, subtitle: description, cover, date, track, section, href: `/til/${t.id}`, kind: 'Ghi chú' };
 }
 
 export async function getEntries() {

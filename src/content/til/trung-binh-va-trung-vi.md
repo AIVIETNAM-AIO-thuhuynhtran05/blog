@@ -4,6 +4,7 @@ description: 'Một nhóm nhỏ khách rất lớn kéo trung bình lên gấp 4
 date: 2026-11-02
 cover: /images/aiv-bank/phan-bo-du-no-kh.png
 track: excel
+section: 'Thống kê mô tả'
 category: Thống kê mô tả
 ---
 

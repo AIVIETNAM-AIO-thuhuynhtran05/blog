@@ -3,6 +3,7 @@ title: 'Lãi suất 11,39% và 9,3% đều đúng, vì trả lời hai câu hỏ
 description: 'Một con số nói về hợp đồng, con số kia nói về từng đồng đang cho vay.'
 date: 2026-11-02
 track: excel
+section: 'Thống kê mô tả'
 category: Thống kê mô tả
 ---
 

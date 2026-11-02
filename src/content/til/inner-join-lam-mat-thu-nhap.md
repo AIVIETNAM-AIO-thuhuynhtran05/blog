@@ -3,6 +3,7 @@ title: 'Inner join có thể âm thầm làm mất dữ liệu'
 description: 'Không có lỗi nào được báo, tổng thu nhập chỉ nhỏ đi.'
 date: 2026-11-02
 track: sql
+section: 'Kết nối bảng'
 category: JOIN
 ---
 

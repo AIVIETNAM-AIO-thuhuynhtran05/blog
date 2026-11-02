@@ -1,10 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import Feed from '../components/Feed.astro';
-import ProjectCard from '../components/ProjectCard.astro';
-import SectionHead from '../components/SectionHead.astro';
 import TrackPills from '../components/TrackPills.astro';
-import { levelTracks, projects, tracks } from '../data/learning';
+import { levelTracks, roadmaps, tracks } from '../data/learning';
 import { getEntries } from '../lib/content';
 
 export function getStaticPaths() {
@@ -16,7 +14,11 @@ export function getStaticPaths() {
 
 const { track, level } = Astro.props;
 const entries = (await getEntries()).filter((e) => e.track === track.slug);
-const trackProjects = projects.filter((p) => p.track === track.slug);
+const roadmap = roadmaps[track.slug];
+// Trong mỗi nhóm, bài cũ đứng trước để đọc theo thứ tự. Bài chưa gắn vào nhóm nào hiện ở dưới bảng.
+const inGroup = (group: string) =>
+  entries.filter((e) => e.section === group).sort((a, b) => a.date.getTime() - b.date.getTime());
+const others = entries.filter((e) => !roadmap?.some((r) => r.group === e.section));
 ---
 <Base title={track.title} description={track.summary}>
   <header class="page-head">
@@ -26,14 +28,37 @@ const trackProjects = projects.filter((p) => p.track === track.slug);
   </header>
 
   <TrackPills />
-  <Feed entries={entries} />
 
-  {trackProjects.length > 0 && (
-    <section class="track-projects">
-      <SectionHead title="Project" />
-      {trackProjects.map((p) => <ProjectCard project={p} />)}
+  {roadmap && (
+    <section class="roadmap">
+      <table>
+        <thead>
+          <tr><th scope="col">#</th><th scope="col">Nhóm</th><th scope="col">Học gì</th></tr>
+        </thead>
+        <tbody>
+          {roadmap.map((r, i) => (
+            <tr>
+              <td class="roadmap-num">{i + 1}</td>
+              <th scope="row">{r.group}</th>
+              <td>
+                {r.description}
+                <span class="roadmap-topics">{r.topics}</span>
+                {inGroup(r.group).length > 0 ? (
+                  <ul class="roadmap-posts">
+                    {inGroup(r.group).map((e) => <li><a href={e.href}>{e.title}</a></li>)}
+                  </ul>
+                ) : (
+                  <span class="roadmap-soon">Chưa có bài</span>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </section>
   )}
 
-  {!entries.length && !trackProjects.length && <p class="empty">Mục này chưa có bài.</p>}
+  <Feed entries={others} />
+
+  {!roadmap && !entries.length && <p class="empty">Mục này chưa có bài.</p>}
 </Base>

@@ -12,10 +12,11 @@ function countLabel(slug: string) {
   return [nEntries && `${nEntries} bài`, nProjects && `${nProjects} project`].filter(Boolean).join(' · ') || 'Chưa có bài';
 }
 ---
-<Base title="Các mục" description="Các mục kiến thức data, từ dễ đến khó.">
+<Base wide title="Các mục" description="Các mục kiến thức data, từ dễ đến khó.">
+  <div class="muc">
   <header class="page-head">
     <h1>Các mục</h1>
-    <p>Từ dễ đến khó, cho người mới bắt đầu học data.</p>
+    <p>Theo trải nghiệm của mình thì nên bắt đầu như này nè.</p>
   </header>
   <ol class="stairs">
     {levelTracks.map((t, i) => (
@@ -31,7 +32,7 @@ function countLabel(slug: string) {
   </ol>
 
   <section class="track-projects">
-    <SectionHead title="Ngoài lộ trình data" />
+    <SectionHead title="Bên cạnh đó, mình còn học thêm" />
     {extraTracks.map((t) => (
       <a class="extra-track" href={`/${t.slug}`}>
         <span class="stair-title">{t.title}</span>
@@ -40,4 +41,5 @@ function countLabel(slug: string) {
       </a>
     ))}
   </section>
+  </div>
 </Base>

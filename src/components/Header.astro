@@ -2,6 +2,7 @@
 import { tracks } from '../data/learning';
 import { pagePath } from '../lib/paths';
 import { nav, site } from '../site.config';
+import MusicToggle from './MusicToggle.astro';
 import ThemeControls from './ThemeControls.astro';
 
 const path = pagePath(Astro.url);
@@ -20,7 +21,10 @@ function isCurrent(href: string) {
       <a class="logo" href="/">{site.title}</a>
       <span class="motto">{site.motto}</span>
     </div>
-    <ThemeControls />
+    <div class="masthead-actions">
+      <MusicToggle />
+      <ThemeControls />
+    </div>
   </div>
   <nav class="tabs" aria-label="Chính">
     {nav.map((n) => (

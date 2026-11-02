@@ -1,17 +1,14 @@
 ---
 import Base from '../layouts/Base.astro';
 import Cover from '../components/Cover.astro';
-import PostCard from '../components/PostCard.astro';
-import TrackPills from '../components/TrackPills.astro';
-import { extraTracks, levelTracks, projects } from '../data/learning';
+import SectionHead from '../components/SectionHead.astro';
+import { extraTracks, getTrack, levelTracks, projects } from '../data/learning';
 import { formatDate, getEntries } from '../lib/content';
 import { site } from '../site.config';
 
 const entries = await getEntries();
 const featured = entries.find((e) => e.featured) ?? entries[0];
-const rest = entries.filter((e) => e !== featured);
-const lead = rest.slice(0, 2);
-const grid = rest.slice(2, 11);
+const latest = entries.filter((e) => e !== featured).slice(0, 6);
 
 function countLabel(slug: string) {
   const nEntries = entries.filter((e) => e.track === slug).length;
@@ -20,78 +17,86 @@ function countLabel(slug: string) {
 }
 ---
 <Base wide>
-  <h1 class="sr-only">{site.title}: {site.tagline}</h1>
+  <h1 class="sr-only">{site.title}</h1>
+  <p class="home-intro">{site.tagline}</p>
 
-  <section class="front">
-    <div class="front-lead">
-      {lead.map((e) => <PostCard entry={e} />)}
+  <div class="home">
+    <div class="home-main">
+      {featured && (
+        <section class="home-section home-featured">
+          <SectionHead title="Bài nổi bật" />
+          <a href={featured.href} tabindex="-1" aria-hidden="true"><Cover entry={featured} fit="contain" /></a>
+          <h3><a href={featured.href}>{featured.title}</a></h3>
+          <p class="home-subtitle">{featured.subtitle}</p>
+          <p class="feed-meta">
+            <time datetime={featured.date.toISOString()}>{formatDate(featured.date)}</time> • {getTrack(featured.track).title} • {featured.kind}
+          </p>
+        </section>
+      )}
+
+      {latest.length > 0 && (
+        <section class="home-section">
+          <SectionHead title="Mới đăng" />
+          {latest.map((e) => (
+            <article class="feed-item">
+              <div class="feed-text">
+                <h3><a href={e.href}>{e.title}</a></h3>
+                <p class="feed-subtitle">{e.subtitle}</p>
+                <p class="feed-meta">
+                  <time datetime={e.date.toISOString()}>{formatDate(e.date)}</time> • {getTrack(e.track).title} • {e.kind}
+                </p>
+              </div>
+            </article>
+          ))}
+          <a class="see-all" href="/archive">Xem tất cả bài viết ›</a>
+        </section>
+      )}
     </div>
 
-    {featured && (
-      <article class="front-featured">
-        <a href={featured.href} tabindex="-1" aria-hidden="true"><Cover entry={featured} fit="contain" /></a>
-        <h2><a href={featured.href}>{featured.title}</a></h2>
-        <p class="front-subtitle">{featured.subtitle}</p>
-        <p class="feed-meta">
-          <time datetime={featured.date.toISOString()}>{formatDate(featured.date)}</time> • {site.author}
-        </p>
-      </article>
-    )}
+    <aside class="home-side">
+      <section class="home-section">
+        <div class="side-head">
+          <h2>Các mục</h2>
+          <a href="/muc">Xem tất cả</a>
+        </div>
+        <ul class="side-tracks">
+          {levelTracks.map((t, i) => (
+            <li>
+              <a href={`/${t.slug}`}>
+                <span class="side-text">
+                  <strong>{t.title}</strong>
+                  <span class="feed-meta">Level {i + 1} • {countLabel(t.slug)}</span>
+                </span>
+                <span class="side-badge" style={`--i:${i};`}>{i + 1}</span>
+              </a>
+            </li>
+          ))}
+          {extraTracks.map((t) => (
+            <li>
+              <a href={`/${t.slug}`}>
+                <span class="side-text">
+                  <strong>{t.title}</strong>
+                  <span class="feed-meta">Học thêm • {countLabel(t.slug)}</span>
+                </span>
+                <span class="side-badge side-badge-extra">+</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
 
-    <aside class="front-side" aria-label="Các mục">
-      <div class="side-head">
-        <h2>Các mục</h2>
-        <a href="/muc">Xem tất cả</a>
-      </div>
-      <ul class="side-tracks">
-        {levelTracks.map((t, i) => (
-          <li>
-            <a href={`/${t.slug}`}>
-              <span class="side-text">
-                <strong>{t.title}</strong>
-                <span class="feed-meta">Level {i + 1} • {countLabel(t.slug)}</span>
-              </span>
-              <span class="side-badge" style={`--i:${i};`}>{i + 1}</span>
-            </a>
-          </li>
-        ))}
-        {extraTracks.map((t) => (
-          <li>
-            <a href={`/${t.slug}`}>
-              <span class="side-text">
-                <strong>{t.title}</strong>
-                <span class="feed-meta">Ngoài lộ trình • {countLabel(t.slug)}</span>
-              </span>
-              <span class="side-badge side-badge-extra">+</span>
-            </a>
-          </li>
-        ))}
-      </ul>
+      <section class="home-section">
+        <div class="side-head">
+          <h2>Project</h2>
+          <a href="/projects">Xem tất cả</a>
+        </div>
+        <ul class="side-projects">
+          {projects.map((p) => <li><a href={p.links[0]?.href ?? '/projects'}>{p.title}</a></li>)}
+        </ul>
+        <a class="see-all" href="/rss.xml">Theo dõi qua RSS</a>
+      </section>
     </aside>
-  </section>
-
-  <section class="lower">
-    <div class="lower-main">
-      <TrackPills />
-      <div class="card-grid">
-        {grid.map((e) => <PostCard entry={e} />)}
-      </div>
-      <a class="see-all" href="/archive">Xem tất cả bài viết ›</a>
-    </div>
-
-    <aside class="lower-side">
-      <img class="monogram monogram-lg" src="/images/anh-thu/avatar.jpg" alt="" />
-      <h2>{site.title}</h2>
-      <p>{site.tagline}</p>
-      <p class="lower-side-by">Viết bởi {site.author} · <a href="/about">Đọc thêm về mình</a></p>
-      <a class="see-all" href="/rss.xml">Theo dõi qua RSS</a>
-
-      <h3>Project</h3>
-      <ul class="side-projects">
-        {projects.map((p) => <li><a href={p.links[0]?.href ?? '/projects'}>{p.title}</a></li>)}
-      </ul>
-    </aside>
-  </section>
+  </div>
 
   {site.openToWork && (
     <section class="card">
