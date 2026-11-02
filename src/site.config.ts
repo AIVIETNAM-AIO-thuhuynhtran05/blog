@@ -26,7 +26,7 @@ export const site = {
     repo: 'AIVIETNAM-AIO-thuhuynhtran05/blog',
     repoId: 'R_kgDOVfw44g',
     category: 'Announcements',
-    categoryId: '',
+    categoryId: 'DIC_kwDOVfw44s4DKMuC',
   },
   // Điền link nào thì link đó hiện ở footer, để trống thì ẩn
   socials: {
