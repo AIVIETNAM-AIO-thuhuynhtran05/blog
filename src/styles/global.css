@@ -381,14 +381,14 @@ p.stair-level {
 }
 
 .muc {
-  max-width: 60rem;
+  max-width: 68rem;
   margin-inline: auto;
 }
 
 /* Màn hình rộng: các bậc đứng cạnh nhau, cao dần sang phải */
-@media (min-width: 60rem) {
+@media (min-width: 68rem) {
   .stairs {
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(7, 1fr);
     align-items: end;
     gap: 0.35rem;
   }

@@ -27,6 +27,12 @@ export const levelTracks = [
     summary: 'Biến dữ liệu thành dashboard để người khác theo dõi và ra quyết định.',
   },
   {
+    slug: 'xac-suat-thong-ke',
+    short: 'Đọc đúng ý nghĩa của con số.',
+    title: 'Xác suất thống kê',
+    summary: 'Nền tảng để đọc đúng ý nghĩa của con số, trước khi học Machine Learning và A/B testing.',
+  },
+  {
     slug: 'machine-learning',
     short: 'Dùng mô hình để dự đoán.',
     title: 'Machine Learning',
@@ -66,6 +72,10 @@ export function getTrack(slug: string) {
 
 // Lời mở đầu hiện trên bảng lộ trình, theo slug. Mỗi chuỗi là một đoạn văn.
 export const trackIntros: Record<string, string[]> = {
+  'xac-suat-thong-ke': [
+    'Mình từng học xác suất thống kê mà không hiểu gì, còn thắc mắc sao mình phải học môn này, từ mấy mẫu dân số hồi học Y cho tới lúc học IT.',
+    'Đến lúc hiểu ra thì lại tiếc. Nhưng sống trong tiếc nuối mãi thì có được gì đâu, nên mình học lại lần nữa.',
+  ],
   powerbi: [
     'Power BI được mình xem như những lần đầu mình tập viết chữ. Mình chưa định hình được một chữ cụ thể là như nào, cần có gì, mình cứ ghi những gì mình thích, mình có thể, và có thể nó rất nguệch ngoạc.',
     'Nhưng sau đó mình đã học được cách xây một dashboard sao cho logic. Để mình share cho mọi người nhenn!',
@@ -223,6 +233,38 @@ export const roadmaps: Record<string, { group: string; description: string; topi
       group: 'Trình bày kết luận',
       description: 'Nêu kết luận trước, rồi đưa lý lẽ và bằng chứng, để người nghe ra được quyết định.',
       topics: 'Pyramid Principle, trả lời câu hỏi "so what", kể chuyện bằng dữ liệu',
+    },
+  ],
+  'xac-suat-thong-ke': [
+    {
+      group: 'Thống kê mô tả',
+      description: 'Tóm tắt một tập dữ liệu bằng vài con số, để biết dữ liệu nằm ở đâu và trải rộng thế nào.',
+      topics: 'Trung bình, trung vị, phân vị, phương sai, độ lệch chuẩn',
+    },
+    {
+      group: 'Xác suất cơ bản',
+      description: 'Đo khả năng xảy ra của một sự kiện, và khả năng đó thay đổi thế nào khi có thêm thông tin.',
+      topics: 'Biến cố, xác suất có điều kiện, độc lập, định lý Bayes',
+    },
+    {
+      group: 'Phân phối xác suất',
+      description: 'Mô tả các giá trị có thể xảy ra và khả năng của từng giá trị.',
+      topics: 'Kỳ vọng, phân phối chuẩn, nhị thức, Poisson, phân phối lệch',
+    },
+    {
+      group: 'Ước lượng',
+      description: 'Dùng một mẫu nhỏ để suy ra tổng thể, kèm theo mức độ không chắc chắn.',
+      topics: 'Mẫu và tổng thể, định lý giới hạn trung tâm, khoảng tin cậy',
+    },
+    {
+      group: 'Kiểm định giả thuyết',
+      description: 'Xét xem một khác biệt quan sát được là có thật hay chỉ do ngẫu nhiên.',
+      topics: 'Giả thuyết H0, p-value, sai lầm loại I và II, t-test, chi-square',
+    },
+    {
+      group: 'Tương quan và hồi quy',
+      description: 'Đo mức độ hai biến đi cùng nhau, và phân biệt tương quan với nhân quả.',
+      topics: 'Hệ số tương quan, tương quan và nhân quả, hồi quy tuyến tính',
     },
   ],
   'machine-learning': [

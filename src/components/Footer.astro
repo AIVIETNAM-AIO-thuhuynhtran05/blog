@@ -4,7 +4,6 @@ import { site } from '../site.config';
 const { wide = false } = Astro.props as { wide?: boolean };
 const { email, github, linkedin } = site.socials;
 const links = [
-  { label: 'RSS', href: '/rss.xml' },
   email && { label: 'Mail', href: `mailto:${email}` },
   github && { label: 'GitHub', href: github },
   linkedin && { label: 'LinkedIn', href: linkedin },
