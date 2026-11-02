@@ -64,6 +64,26 @@ export function getTrack(slug: string) {
   return tracks.find((t) => t.slug === slug)!;
 }
 
+// Lời mở đầu hiện trên bảng lộ trình, theo slug. Mỗi chuỗi là một đoạn văn.
+export const trackIntros: Record<string, string[]> = {
+  cfa: [
+    'Mình thích dữ liệu tài chính, muốn hiểu dòng tiền của doanh nghiệp, nên mình học CFA.',
+    'Hoặc ít nhất, lỡ sau này mình không làm IT nữa mà đi khởi nghiệp chẳng hạn, mình vẫn đọc được báo cáo tài chính công ty mà không cần search GPT.',
+  ],
+  'soft-skill': [
+    'Soft skill là phần mình thấy mình còn thiếu nhiều, nên cũng đang học dần. Học tới đâu mình ghi lại tới đó nha.',
+  ],
+  sql: [
+    'Hồi đi học, SQL với mình chỉ là vài câu lệnh đơn giản. Nên mình cứ tò mò mãi: ngoài kia dữ liệu nhiều đến vậy, người ta dùng SQL thế nào để xử lý hết?',
+    'Câu hỏi đó mình để ngỏ suốt mấy năm, cho tới ngày quyết định đi theo data. Và đây là những gì mình đã đi qua để tìm câu trả lời.',
+  ],
+  'machine-learning': [
+    'Mình học ở trường chuyên, tiếp xúc nhiều với các bạn chuyên Toán, và mình nhận ra mình không giỏi toán. Nên khi học IT, mình khá ngại đụng tới Machine Learning hay Data Science, vì nghe kể là ai giỏi toán thì mới học được.',
+    'Nhưng sau này mình nghĩ, không giỏi toán chưa phải là lý do để không thử. Cần phần toán nào thì mình học phần đó, bắt đầu từ việc hiểu mô hình làm gì và dùng nó cho đúng.',
+    'Nên mí bạn đừng ngại dấn thân nhen!',
+  ],
+};
+
 // Lộ trình hiện ở trang của mục, theo slug. Mục nào không khai báo thì không hiện.
 export const roadmaps: Record<string, { group: string; description: string; topics: string }[]> = {
   excel: [

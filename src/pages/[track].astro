@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Feed from '../components/Feed.astro';
 import TrackPills from '../components/TrackPills.astro';
-import { levelTracks, roadmaps, tracks } from '../data/learning';
+import { levelTracks, roadmaps, trackIntros, tracks } from '../data/learning';
 import { getEntries } from '../lib/content';
 
 export function getStaticPaths() {
@@ -15,6 +15,7 @@ export function getStaticPaths() {
 const { track, level } = Astro.props;
 const entries = (await getEntries()).filter((e) => e.track === track.slug);
 const roadmap = roadmaps[track.slug];
+const intro = trackIntros[track.slug];
 // Trong mỗi nhóm, bài cũ đứng trước để đọc theo thứ tự. Bài chưa gắn vào nhóm nào hiện ở dưới bảng.
 const inGroup = (group: string) =>
   entries.filter((e) => e.section === group).sort((a, b) => a.date.getTime() - b.date.getTime());
@@ -28,6 +29,8 @@ const others = entries.filter((e) => !roadmap?.some((r) => r.group === e.section
   </header>
 
   <TrackPills />
+
+  {intro && <div class="prose track-intro">{intro.map((p) => <p>{p}</p>)}</div>}
 
   {roadmap && (
     <section class="roadmap">
