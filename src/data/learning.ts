@@ -6,7 +6,7 @@ export const levelTracks = [
     slug: 'excel',
     short: 'Làm sạch và tổng hợp dữ liệu.',
     title: 'Excel',
-    summary: 'Làm sạch, tổng hợp và trình bày dữ liệu bằng công cụ phổ biến nhất văn phòng.',
+    summary: 'Cứ nghĩ chỉ để kẻ bảng với tính tổng, ai ngờ Excel powerful hơn mình tưởng rất nhiều.',
   },
   {
     slug: 'sql',
@@ -66,6 +66,10 @@ export function getTrack(slug: string) {
 
 // Lời mở đầu hiện trên bảng lộ trình, theo slug. Mỗi chuỗi là một đoạn văn.
 export const trackIntros: Record<string, string[]> = {
+  powerbi: [
+    'Power BI được mình xem như những lần đầu mình tập viết chữ. Mình chưa định hình được một chữ cụ thể là như nào, cần có gì, mình cứ ghi những gì mình thích, mình có thể, và có thể nó rất nguệch ngoạc.',
+    'Nhưng sau đó mình đã học được cách xây một dashboard sao cho logic. Để mình share cho mọi người nhenn!',
+  ],
   cfa: [
     'Mình thích dữ liệu tài chính, muốn hiểu dòng tiền của doanh nghiệp, nên mình học CFA.',
     'Hoặc ít nhất, lỡ sau này mình không làm IT nữa mà đi khởi nghiệp chẳng hạn, mình vẫn đọc được báo cáo tài chính công ty mà không cần search GPT.',
