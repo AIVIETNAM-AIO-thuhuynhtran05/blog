@@ -707,6 +707,14 @@ main > section.roadmap {
   color: var(--muted);
 }
 
+.prose .note {
+  margin-block: 1.5rem;
+  padding: 0.8rem 1.1rem;
+  border-left: 3px solid var(--gold);
+  border-radius: 6px;
+  background: var(--highlight);
+}
+
 .prose table {
   display: block;
   max-width: 100%;
