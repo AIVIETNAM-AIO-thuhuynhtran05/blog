@@ -2,16 +2,19 @@
 import Base from '../layouts/Base.astro';
 import Feed from '../components/Feed.astro';
 import SectionHead from '../components/SectionHead.astro';
-import { bookSections, bookTrack } from '../data/learning';
+import { bookSections, bookTrack, trackIntros } from '../data/learning';
 import { getEntries } from '../lib/content';
 
 const entries = (await getEntries()).filter((e) => e.track === bookTrack.slug);
 const others = entries.filter((e) => !bookSections.includes(e.section ?? ''));
+const intro = trackIntros[bookTrack.slug];
 ---
 <Base title={bookTrack.title} description={bookTrack.summary}>
   <header class="page-head">
     <h1>{bookTrack.title}</h1>
   </header>
+
+  {intro && <div class="prose track-intro">{intro.map((p) => <p>{p}</p>)}</div>}
 
   {bookSections.map((section) => {
     const books = entries.filter((e) => e.section === section);
