@@ -84,7 +84,7 @@ export function getTrack(slug: string) {
 export const trackIntros: Record<string, string[]> = {
   'sach-minh-doc': [
     '“Anh Thư đừng quá gồng lên để trở thành một phiên bản hoàn hảo trong mắt ai đó. Nhưng Anh Thư cũng nên học cách hoàn thiện hơn mỗi ngày nhen, từng chút một thôi.”',
-    'Cũng đừng đợi mọi thứ hoàn hảo rồi mới bắt đầu, dù là một việc mới hay một mối quan hệ, vì mình lớn lên từ chính những lần sai mà. Chúc Anh Thư bước ra khỏi vùng an toàn nhiều hơn nữa, vì đó cũng là một phần của hành trình làm người lớn.',
+    'Cũng đừng đợi mọi thứ hoàn hảo rồi mới bắt đầu, dù là một việc mới hay một mối quan hệ, vì mình lớn lên từ chính những lần sai mà. Chúc Anh Thư bước ra khỏi vùng an toàn nhiều hơn nữa, vì đó cũng là một phần của hành trình làm người lớn. Và làm gì thì hãy dấn thân.',
     'Anh Thư cũng muốn cảm ơn mọi người, và cả những mối quan hệ đã qua, vì đã cho Anh Thư những trải nghiệm quý giá và những bài học từ chính những thiếu sót của mình.',
     'Vì chân thành sẽ chạm tới chân thành ♡',
   ],
