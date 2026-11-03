@@ -42,7 +42,7 @@ draft: true
 
 `track` quyết định bài nằm ở mục nào: `excel`, `sql`, `data-transformation`, `powerbi`, `xac-suat-thong-ke`, `machine-learning`, `business`, `soft-skill` hoặc `cfa`. Bài sẽ tự hiện ở trang của mục đó, ví dụ `/sql`.
 
-Bài về sách dùng `track: sach-minh-doc` và thêm `section: 'DA - IT'` hoặc `section: 'Life'` để vào đúng phần ở tab Sách mình đọc.
+Bài về sách dùng `track: sach-minh-doc` và thêm `section: 'DA - IT'` hoặc `section: 'Life'` để vào đúng phần ở tab My thoughts.
 
 Với mục có bảng lộ trình, thêm `section: 'Tên nhóm'` để bài hiện đúng ở nhóm đó trong bảng. Tên nhóm phải giống y như `group` trong `roadmaps` ở `src/data/learning.ts`; bài không có `section` hoặc gõ sai tên sẽ hiện ở dưới bảng.
 
