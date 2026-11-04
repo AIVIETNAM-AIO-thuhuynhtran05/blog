@@ -5,6 +5,7 @@ date: 2026-11-02
 cover: /images/aiv-bank/xu-huong-du-no-nii.png
 featured: true
 track: business
+section: 'Tài chính – ngân hàng'
 tags: [eda, python, banking]
 ---
 

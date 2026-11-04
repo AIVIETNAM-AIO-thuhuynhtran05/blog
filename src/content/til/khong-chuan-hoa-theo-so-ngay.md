@@ -3,6 +3,7 @@ title: 'Đọc cách dữ liệu được tính trước khi chuẩn hóa'
 description: 'Chia theo số ngày sẽ tạo ra một đỉnh NIM giả vào tháng 2.'
 date: 2026-11-02
 track: business
+section: 'Tài chính – ngân hàng'
 category: EDA
 ---
 

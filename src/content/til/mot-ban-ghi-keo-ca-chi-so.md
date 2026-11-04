@@ -4,6 +4,7 @@ description: 'Bỏ một khoản vay 390 tỷ, xu hướng nợ xấu đổi chi
 date: 2026-11-02
 cover: /images/aiv-bank/no-xau-loai-khoan-390-ty.png
 track: business
+section: 'Tài chính – ngân hàng'
 category: EDA
 ---
 

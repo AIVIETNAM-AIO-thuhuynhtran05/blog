@@ -40,9 +40,9 @@ export const levelTracks = [
   },
   {
     slug: 'business',
-    short: 'Biến con số thành quyết định.',
+    short: 'Tài chính, sales, logistics và các ngành khác.',
     title: 'Business Domain',
-    summary: 'Hiểu ngành và bài toán kinh doanh, để con số trở thành quyết định.',
+    summary: 'Hiểu từng ngành làm ăn ra sao, từ tài chính, sales tới logistics, để đọc số cho đúng bối cảnh.',
   },
 ];
 
@@ -281,6 +281,33 @@ export const roadmaps: Record<string, { group: string; description: string; topi
       group: 'Tương quan và hồi quy',
       description: 'Đo mức độ hai biến đi cùng nhau, và phân biệt tương quan với nhân quả.',
       topics: 'Hệ số tương quan, tương quan và nhân quả, hồi quy tuyến tính',
+    },
+  ],
+  business: [
+    {
+      group: 'Tài chính – ngân hàng',
+      description: 'Hiểu ngân hàng kiếm tiền từ đâu và rủi ro nằm ở đâu, để đọc đúng các chỉ số tín dụng.',
+      topics: 'Dư nợ, NII và NIM, nợ xấu và nhóm nợ, giải ngân và tái tục, báo cáo tài chính',
+    },
+    {
+      group: 'Sales',
+      description: 'Biết doanh số đến từ đâu, khách nào mua nhiều, và vì sao tháng này tăng hay giảm.',
+      topics: 'Doanh thu, số đơn, giá trị đơn trung bình, phễu bán hàng, tỷ lệ chuyển đổi, tiến độ so với target',
+    },
+    {
+      group: 'Marketing',
+      description: 'Đo chiến dịch nào mang về khách thật, và tốn bao nhiêu tiền để có một khách.',
+      topics: 'CAC, ROAS, attribution, cohort, retention, churn, RFM',
+    },
+    {
+      group: 'Logistics và chuỗi cung ứng',
+      description: 'Theo dõi hàng đi từ kho tới tay khách: chỗ nào chậm, chỗ nào tồn, chỗ nào tốn tiền.',
+      topics: 'Tồn kho, vòng quay hàng tồn, lead time, tỷ lệ giao đúng hẹn, chi phí vận chuyển, dự báo nhu cầu',
+    },
+    {
+      group: 'Nhân sự',
+      description: 'Nhìn người vào, người ra và năng suất, để biết công ty có đang giữ được người hay không.',
+      topics: 'Headcount, tỷ lệ nghỉ việc, thời gian tuyển dụng, chi phí nhân sự, năng suất',
     },
   ],
   'machine-learning': [
