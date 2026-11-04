@@ -93,6 +93,10 @@ Có một giả thuyết khác cần loại trừ: nợ xấu không dự thu l�
 
 Nhìn số báo cáo, nợ xấu tháng 6/2026 tăng từ 2,38% lên 2,63%. Loại riêng một khoản vay 390 tỷ thì tỷ lệ này lại *giảm* từ 2,39% xuống 2,24%. Cách đọc đúng là một khoản xấu đi, không phải toàn danh mục xấu đi trong tháng 6.
 
+Vì sao lại tách riêng khoản này? Khi thấy nợ xấu nhảy, mình xếp các khoản nợ xấu cuối tháng 6 theo dư nợ. Khoản 390 tỷ đứng đầu, gần gấp 4 lần khoản thứ hai (104 tỷ), và riêng nó chiếm khoảng 15% tổng nợ xấu. Lịch sử của khoản này cũng khớp đúng thời điểm chỉ số nhảy: trả nợ bình thường tới tháng 3/2026, quá hạn 35 ngày vào tháng 4 (nhóm 2), 66 ngày vào tháng 5, rồi qua mốc 90 ngày vào tháng 6 nên bị chuyển sang nhóm 3. Chỉ một khoản chuyển nhóm là đủ đẩy cả tỷ lệ lên.
+
+Đây không phải khoản vay lớn nhất ngân hàng, nó chỉ đứng thứ 10 trên 11.073 hợp đồng. Nhưng nó là khoản lớn nhất trong số đang xấu: một khoản vay dự án đầu tư của doanh nghiệp sản xuất điện tử ở Bắc Ninh, có bất động sản bảo đảm trị giá 650 tỷ.
+
 Khoản này còn làm méo các lát cắt nhỏ hơn: Bắc Ninh hiện 16,0% nợ xấu (loại ra còn 1,6%), ngành điện tử hiện 9,2% (loại ra còn 0,2%). Nếu không tách nó ra, rất dễ kết luận sai rằng ngành điện tử hoặc địa bàn Bắc Ninh đang có vấn đề.
 
 Tách được nhiễu rồi mới thấy tín hiệu đáng lo hơn, và tín hiệu đó nằm ở xu hướng nền:
