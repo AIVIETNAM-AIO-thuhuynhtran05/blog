@@ -776,6 +776,10 @@ main > section.roadmap {
   max-width: 78rem;
 }
 
+.wrap-medium {
+  max-width: 50rem;
+}
+
 main.wrap-wide {
   padding-top: 1.5rem;
 }

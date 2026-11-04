@@ -8,11 +8,12 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { site } from '../site.config';
 
-const { title, description = site.description, type = 'website', wide = false } = Astro.props as {
+const { title, description = site.description, type = 'website', wide = false, medium = false } = Astro.props as {
   title?: string;
   description?: string;
   type?: string;
   wide?: boolean;
+  medium?: boolean;
 };
 const pageTitle = title ? `${title} | ${site.title}` : site.title;
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -43,7 +44,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   </head>
   <body>
     <Header />
-    <main class:list={['wrap', { 'wrap-wide': wide }]}><slot /></main>
+    <main class:list={['wrap', { 'wrap-wide': wide, 'wrap-medium': medium }]}><slot /></main>
     <Footer wide={wide} />
   </body>
 </html>
