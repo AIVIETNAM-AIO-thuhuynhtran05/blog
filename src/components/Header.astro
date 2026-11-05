@@ -20,6 +20,7 @@ function isCurrent(href: string) {
     <div class="brand">
       <a class="logo" href="/">{site.title}</a>
       <span class="motto">{site.motto}</span>
+      {site.mottoExtra && <span class="motto">{site.mottoExtra}</span>}
     </div>
     <div class="masthead-actions">
       <MusicToggle />

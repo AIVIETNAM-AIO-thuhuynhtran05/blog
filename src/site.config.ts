@@ -3,6 +3,8 @@ export const site = {
   author: 'Anh Thư',
   // Khẩu hiệu dưới tên blog, viết như một dòng comment trong notebook
   motto: '# learning by sharing ♡',
+  // Dòng comment thứ hai, hiện ngay dưới khẩu hiệu
+  mottoExtra: '# caffeine addicted ☕',
   description:
     'Anh Thư chia sẻ những gì mình học và những trải nghiệm cá nhân trên hành trình làm việc với dữ liệu.',
   // Câu mô tả blog, hiện ở đầu trang chủ
