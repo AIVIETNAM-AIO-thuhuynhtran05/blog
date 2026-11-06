@@ -64,9 +64,9 @@ Cloud warehouse (Snowflake, BigQuery, Redshift, Databricks) và các engine cộ
 | Một framework test và tài liệu cho dữ liệu | Công cụ BI hay vẽ dashboard |
 | Có bản mã nguồn mở (dbt Core) và bản dịch vụ (dbt Cloud) | Bộ lập lịch đa năng (thường chạy kèm Airflow, Dagster, cron…) |
 
-> **À, ra vậy.** dbt không tự xử lý một dòng dữ liệu nào. Nó compile code của bạn thành SQL thuần rồi gửi cho warehouse (DuckDB, Snowflake, BigQuery…) thực thi. Vì vậy dbt chạy nhanh hay chậm hoàn toàn phụ thuộc vào warehouse, và cùng một project có thể chuyển sang warehouse khác mà gần như không phải viết lại.
+> **Nhận xét.** Bản thân dbt không xử lý dữ liệu. Mọi phép tính đều do warehouse (DuckDB, Snowflake, BigQuery…) thực hiện trên câu SQL mà dbt sinh ra. Do đó hiệu năng của pipeline phụ thuộc vào warehouse chứ không phụ thuộc vào dbt. Khi chuyển project sang một warehouse khác, phần thay đổi chủ yếu là cấu hình kết nối, cùng một số hàm SQL đặc thù của từng hệ quản trị.
 
-> **Trong project.** Script `scripts/load_csvs.py` đọc 31 file CSV và nạp nguyên trạng vào schema `raw` của DuckDB (E + L), ví dụ `orders.csv` thành bảng `raw.orders`. Từ đó trở đi, mọi biến đổi đều nằm trong dbt (T). Cả kho dữ liệu chỉ là một file `warehouse/ecommerce.duckdb`.
+> **Trong project.** Bước E và L do script `scripts/load_csvs.py` đảm nhiệm: 31 file CSV được nạp nguyên trạng vào schema `raw` của DuckDB, mỗi file tương ứng với một bảng (ví dụ `orders.csv` → `raw.orders`). Bước T do dbt đảm nhiệm. Toàn bộ kho dữ liệu được lưu trong một file duy nhất là `warehouse/ecommerce.duckdb`.
 
 ### 3. Analytics Engineer: vai trò mới
 
@@ -168,7 +168,7 @@ Bạn không bao giờ phải khai báo "chạy A trước B". Mỗi lần viế
 
 `ref()` còn làm thêm một việc: nó chuyển tên model thành tên đầy đủ `database.schema.table` theo **target** đang chạy (khai báo trong `profiles.yml`). Chạy với `--target dev` thì `ref('stg_orders')` trỏ tới schema dev, chạy với `--target prod` thì trỏ tới schema prod. Code không đổi một ký tự nào. Cách đặt tên schema có thể tuỳ chỉnh qua macro `generate_schema_name`.
 
-> **À, ra vậy.** Vì dbt biết toàn bộ đồ thị phụ thuộc, nó có sẵn **lineage**. Câu hỏi "con số doanh thu này đến từ đâu?" giờ có câu trả lời trực quan: lần ngược từ `fact_sales` về tận file CSV gốc. Ta cũng có thể chọn chạy một phần đồ thị: `dbt build -s +fact_sales` chạy `fact_sales` cùng mọi thứ phía trước nó, còn `-s stg_orders+` chạy mọi thứ phía sau.
+> **Nhận xét.** Vì dbt biết toàn bộ đồ thị phụ thuộc, nó có sẵn **lineage**. Câu hỏi "con số doanh thu này đến từ đâu?" giờ có câu trả lời trực quan: lần ngược từ `fact_sales` về tận file CSV gốc. Ta cũng có thể chọn chạy một phần đồ thị: `dbt build -s +fact_sales` chạy `fact_sales` cùng mọi thứ phía trước nó, còn `-s stg_orders+` chạy mọi thứ phía sau.
 
 ### 6. Materialization: cùng một SQL, nhiều cách lưu
 
@@ -280,7 +280,7 @@ select * from renamed
 
 **Materialization:** `view`. Staging không cần lưu riêng một bản dữ liệu; nó luôn phản ánh bảng thô mới nhất. **Test tối thiểu:** `unique` và `not_null` trên khoá chính của mỗi model staging. Lỗi dữ liệu nguồn nên bị bắt ở đây, càng sớm càng tốt.
 
-> **À, ra vậy.** Staging là "lớp chống sốc" giữa hệ thống nguồn và phần còn lại của project. Nếu nguồn đổi tên cột `id` thành `payment_id`, hay đổi tiền từ xu sang đồng, bạn chỉ sửa **một** file staging. Hàng chục model phía sau không cần biết gì cả.
+> **Nhận xét.** Staging là "lớp chống sốc" giữa hệ thống nguồn và phần còn lại của project. Nếu nguồn đổi tên cột `id` thành `payment_id`, hay đổi tiền từ xu sang đồng, bạn chỉ sửa **một** file staging. Hàng chục model phía sau không cần biết gì cả.
 
 #### 7.2 Intermediate: tích hợp dữ liệu và logic nghiệp vụ
 
@@ -539,7 +539,7 @@ models:
         data_type: decimal(18,2)
 ```
 
-> **À, ra vậy.** Ba lớp bảo vệ bổ sung cho nhau: **unit test** bảo vệ logic, **contract** bảo vệ cấu trúc, **data test** bảo vệ dữ liệu. Không lớp nào thay thế được lớp nào.
+> **Nhận xét.** Ba lớp bảo vệ bổ sung cho nhau: **unit test** bảo vệ logic, **contract** bảo vệ cấu trúc, **data test** bảo vệ dữ liệu. Không lớp nào thay thế được lớp nào.
 
 > **Trong project.** Project có **232 data test**, và tất cả được chạy lại mỗi lần `dbt build`. Một model lỗi sẽ khiến các model phía sau nó bị bỏ qua (skip), nên dữ liệu sai không lan xuống dashboard. Các test gồm:
 >
@@ -578,7 +578,7 @@ raw.order_returns ─► stg_ecommerce__order_returns ────────�
 raw.addresses ─────► stg_ecommerce__addresses ──► int_addresses__geography ─────────────────────┘
 ```
 
-> **À, ra vậy.** Quay lại câu hỏi mở đầu: *"Con số doanh thu này từ đâu ra?"* Mở dbt docs, click vào `fact_sales`, xem lineage: nó đi từ `int_order_items__enriched`, qua `int_orders__enriched` (nơi seed `order_status_mapping` quyết định đơn nào được tính doanh thu), về các model staging, về các bảng raw. Tài liệu không bao giờ lỗi thời, vì nó được sinh ra từ chính code.
+> **Nhận xét.** Quay lại câu hỏi mở đầu: *"Con số doanh thu này từ đâu ra?"* Mở dbt docs, click vào `fact_sales`, xem lineage: nó đi từ `int_order_items__enriched`, qua `int_orders__enriched` (nơi seed `order_status_mapping` quyết định đơn nào được tính doanh thu), về các model staging, về các bảng raw. Tài liệu không bao giờ lỗi thời, vì nó được sinh ra từ chính code.
 
 ### 14. CI/CD
 
