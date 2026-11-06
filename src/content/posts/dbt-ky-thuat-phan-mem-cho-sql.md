@@ -250,7 +250,7 @@ models/
 
 Quy ước đặt tên đầy đủ của dbt Labs là `stg_<nguồn>__<thực thể>` (ví dụ `stg_shop__orders`), có hai dấu gạch dưới để tách tên nguồn. Project nhỏ một nguồn có thể dùng `stg_orders`. Quan trọng nhất là cả project dùng một quy ước thống nhất.
 
-#### 7.1 Staging: sơ chế nguyên liệu
+#### 7.1 Staging: chuẩn hoá dữ liệu nguồn
 
 **Mục đích:** biến mỗi bảng thô thành một phiên bản sạch, đặt tên chuẩn, đúng kiểu dữ liệu. Đây là "khối nguyên tử" mà mọi model phía sau xây lên. Mỗi bảng nguồn có **đúng một** model staging, và staging là **tầng duy nhất được gọi `source()`**.
 
@@ -282,7 +282,7 @@ select * from renamed
 
 > **À, ra vậy.** Staging là "lớp chống sốc" giữa hệ thống nguồn và phần còn lại của project. Nếu nguồn đổi tên cột `id` thành `payment_id`, hay đổi tiền từ xu sang đồng, bạn chỉ sửa **một** file staging. Hàng chục model phía sau không cần biết gì cả.
 
-#### 7.2 Intermediate: các bước chế biến
+#### 7.2 Intermediate: tích hợp dữ liệu và logic nghiệp vụ
 
 **Mục đích:** chứa những bước biến đổi có mục đích rõ ràng nằm giữa dữ liệu sạch và sản phẩm cuối. Đây là nơi đặt các phép join, tính toán nghiệp vụ, và quan trọng nhất là **đưa dữ liệu về đúng grain** trước khi ghép. Mỗi model intermediate nên trả lời được câu: "model này làm một việc gì?"
 
@@ -315,7 +315,7 @@ left join payments p using (order_id)               -- 1:1, không fan-out
 
 > **Cạm bẫy.** Không phải project nào cũng cần intermediate cho mọi thứ. Nếu một mart chỉ cần join hai model staging đơn giản thì làm thẳng ở mart. Hãy tạo intermediate khi (1) logic quá dài làm model marts khó đọc, (2) cùng một logic được dùng lại ở nhiều mart, hoặc (3) cần đổi grain trước khi join.
 
-#### 7.3 Marts: món ăn lên bàn
+#### 7.3 Marts: dữ liệu phục vụ phân tích
 
 **Mục đích:** bảng cuối cùng mà người dùng, dashboard và nhóm khác đọc. Mỗi mart đại diện cho một **thực thể hoặc sự kiện nghiệp vụ** (khách hàng, sản phẩm, giao dịch bán hàng), thường ở dạng rộng và đã denormalize để query đơn giản, không phải join thêm.
 
