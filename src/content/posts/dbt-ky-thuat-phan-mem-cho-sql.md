@@ -594,7 +594,19 @@ Nếu một thay đổi làm hỏng test ở bất kỳ model nào phía sau, PR
 
 ### 15. Jinja và macros: SQL có biến, vòng lặp, hàm
 
-Jinja biến SQL thành một ngôn ngữ có thể lập trình. **Macro** là hàm Jinja tái sử dụng, đặt trong thư mục `macros/`. Đây là cách dbt hiện thực nguyên tắc DRY.
+**Jinja** là một ngôn ngữ template mã nguồn mở viết bằng Python, ban đầu được dùng để sinh trang HTML trong các web framework như Flask. Một template Jinja là văn bản thông thường có chèn các đoạn mã; khi template được render, các đoạn mã này được thực thi và thay bằng kết quả. dbt áp dụng cơ chế đó cho SQL: mỗi model là một template, và bước compile render template thành câu SQL thuần trước khi gửi tới warehouse. Nhờ vậy SQL, vốn không có biến, vòng lặp hay hàm do người dùng định nghĩa, có thêm các cấu trúc lập trình này. Warehouse không xử lý Jinja; nó chỉ nhận câu SQL đã được render.
+
+Jinja có ba loại cú pháp:
+
+| Cú pháp | Chức năng | Ví dụ |
+|---|---|---|
+| `{{ ... }}` | Biểu thức: tính một giá trị và chèn kết quả vào SQL | `{{ ref('stg_orders') }}` |
+| `{% ... %}` | Câu lệnh: điều kiện, vòng lặp, gán biến, định nghĩa macro; không tự chèn gì vào SQL | `{% if is_incremental() %}` |
+| `{# ... #}` | Chú thích; bị loại bỏ hoàn toàn khi compile | `{# giải thích macro #}` |
+
+Ví dụ, dòng `{{ to_money('total') }} as order_total` trong một model staging được render thành `cast(total as decimal(18, 2)) as order_total`. Có thể xem kết quả render của mọi model bằng `dbt compile`, trong thư mục `target/compiled/`. Các hàm `ref()` và `source()` ở Phần II thực chất cũng là hàm Jinja do dbt cung cấp.
+
+**Macro** là hàm Jinja tái sử dụng, đặt trong thư mục `macros/`. Đây là cách dbt hiện thực nguyên tắc DRY.
 
 Vòng lặp, ví dụ pivot theo phương thức thanh toán:
 
