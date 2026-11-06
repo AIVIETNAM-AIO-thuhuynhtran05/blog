@@ -15,11 +15,11 @@ Thứ Hai đầu tháng, trưởng nhóm kinh doanh mở hai dashboard và thấ
 
 Đây không phải lỗi của SQL. SQL là một ngôn ngữ tốt. Vấn đề là **cách chúng ta làm việc với SQL**: không quản lý phiên bản, không tách module, không kiểm thử, không tài liệu. Kỹ sư phần mềm đã giải quyết những vấn đề này từ hàng chục năm trước. dbt là công cụ mang các thực hành đó vào thế giới dữ liệu.
 
-### Bản đồ của bài
+### Bài này đi qua những gì
 
-Bảng dưới đây là "bộ khung" của cả bài. Mỗi phần sẽ trả lời một vài dòng, và ở phần kết ta sẽ nhìn lại bảng khi đã đầy đủ.
+Hầu hết những thứ dbt làm không mới. Bên phần mềm người ta đã làm từ lâu, dbt chỉ đem sang cho SQL. Mình liệt kê trước ở đây, mỗi dòng sẽ được nói kỹ ở phần tương ứng:
 
-| Thực hành trong software engineering | Câu hỏi nó trả lời | Trong bài |
+| Bên phần mềm có | Để giải quyết chuyện gì | Xem ở |
 |---|---|---|
 | Version control | Ai sửa gì, khi nào, quay lại được không? | Phần II |
 | Modular code | Tái sử dụng logic thay vì copy-paste? | Phần II |
@@ -29,9 +29,7 @@ Bảng dưới đây là "bộ khung" của cả bài. Mỗi phần sẽ trả l
 | CI/CD | Thay đổi có làm hỏng thứ gì không trước khi lên prod? | Phần IV |
 | DRY, thư viện | Không viết lại cùng một thứ nhiều lần? | Phần V |
 
-Trong bài có bốn loại khung trích dẫn: **À, ra vậy** là ý quan trọng dễ bị bỏ qua, **Cạm bẫy** là lỗi hay gặp trong thực tế, **Trong project** là chỗ lý thuyết gặp code thật, và **Điểm nhấn** là bài học chính của một phần.
-
-Project minh hoạ là một [kho dữ liệu e-commerce](https://github.com/AIVIETNAM-AIO-thuhuynhtran05/E-commerce-Data-Warehouse-and-Customer-Analytics) dựng bằng dbt Core và DuckDB: 31 file CSV giả lập (khoảng 264.000 dòng: 7.000 khách hàng, 36.000 đơn hàng, 100.000 dòng chi tiết đơn) được biến thành một star schema cho sales analytics.
+Ví dụ trong bài lấy từ project mình làm để học dbt: một [kho dữ liệu e-commerce](https://github.com/AIVIETNAM-AIO-thuhuynhtran05/E-commerce-Data-Warehouse-and-Customer-Analytics) chạy trên DuckDB. Dữ liệu là giả lập, gồm 31 file CSV, khoảng 264.000 dòng (7.000 khách hàng, 36.000 đơn hàng, 100.000 dòng chi tiết đơn). Mấy khung **Trong project** là chỗ mình đối chiếu lý thuyết với code thật.
 
 ## Phần I. Vì sao có dbt
 
