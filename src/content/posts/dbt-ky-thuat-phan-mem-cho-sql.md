@@ -15,21 +15,23 @@ Thứ Hai đầu tháng, trưởng nhóm kinh doanh mở hai dashboard và thấ
 
 Đây không phải lỗi của SQL. SQL là một ngôn ngữ tốt. Vấn đề là **cách chúng ta làm việc với SQL**: không quản lý phiên bản, không tách module, không kiểm thử, không tài liệu. Kỹ sư phần mềm đã giải quyết những vấn đề này từ hàng chục năm trước. dbt là công cụ mang các thực hành đó vào thế giới dữ liệu.
 
-### Bài này đi qua những gì
+### Phạm vi và cấu trúc bài viết
 
-Hầu hết những thứ dbt làm không mới. Bên phần mềm người ta đã làm từ lâu, dbt chỉ đem sang cho SQL. Mình liệt kê trước ở đây, mỗi dòng sẽ được nói kỹ ở phần tương ứng:
+Các thành phần chính của dbt đều tương ứng với những thực hành đã được chuẩn hoá trong kỹ thuật phần mềm. Bảng 1 trình bày sự tương ứng này và vị trí mỗi nội dung được phân tích trong bài.
 
-| Bên phần mềm có | Để giải quyết chuyện gì | Xem ở |
+*Bảng 1. Các thực hành kỹ thuật phần mềm được đề cập trong bài.*
+
+| Thực hành | Vấn đề được giải quyết | Mục |
 |---|---|---|
-| Version control | Ai sửa gì, khi nào, quay lại được không? | Phần II |
-| Modular code | Tái sử dụng logic thay vì copy-paste? | Phần II |
-| Kiến trúc phân tầng | Mỗi đoạn code chịu trách nhiệm gì? | Phần III |
-| Test (unit + assertion) | Làm sao biết kết quả còn đúng? | Phần IV |
-| Documentation | Bảng này nghĩa là gì, đến từ đâu? | Phần IV |
-| CI/CD | Thay đổi có làm hỏng thứ gì không trước khi lên prod? | Phần IV |
-| DRY, thư viện | Không viết lại cùng một thứ nhiều lần? | Phần V |
+| Quản lý phiên bản (version control) | Truy vết thay đổi và khôi phục phiên bản trước | Phần II |
+| Mô-đun hoá (modular code) | Tái sử dụng logic, tránh sao chép mã | Phần II |
+| Kiến trúc phân tầng | Phân định trách nhiệm của từng thành phần | Phần III |
+| Kiểm thử (unit test, assertion) | Xác minh tính đúng đắn của kết quả | Phần IV |
+| Tài liệu hoá | Mô tả ý nghĩa và nguồn gốc của dữ liệu | Phần IV |
+| Tích hợp và triển khai liên tục (CI/CD) | Phát hiện lỗi trước khi triển khai lên môi trường production | Phần IV |
+| Nguyên tắc DRY, thư viện dùng chung | Hạn chế lặp lại mã | Phần V |
 
-Ví dụ trong bài lấy từ project mình làm để học dbt: một [kho dữ liệu e-commerce](https://github.com/AIVIETNAM-AIO-thuhuynhtran05/E-commerce-Data-Warehouse-and-Customer-Analytics) chạy trên DuckDB. Dữ liệu là giả lập, gồm 31 file CSV, khoảng 264.000 dòng (7.000 khách hàng, 36.000 đơn hàng, 100.000 dòng chi tiết đơn). Mấy khung **Trong project** là chỗ mình đối chiếu lý thuyết với code thật.
+**Dữ liệu minh hoạ.** Các ví dụ được lấy từ một [kho dữ liệu e-commerce](https://github.com/AIVIETNAM-AIO-thuhuynhtran05/E-commerce-Data-Warehouse-and-Customer-Analytics) xây dựng bằng dbt Core trên DuckDB. Bộ dữ liệu là dữ liệu giả lập gồm 31 bảng với khoảng 264.000 dòng, trong đó có 7.000 khách hàng, 36.000 đơn hàng và 100.000 dòng chi tiết đơn hàng. Các khung **Trong project** đối chiếu nội dung lý thuyết với phần cài đặt tương ứng trong project.
 
 ## Phần I. Vì sao có dbt
 
@@ -676,7 +678,9 @@ packages:
 
 ## Kết luận: nhìn lại bản đồ
 
-Bảng ở phần mở đầu giờ đã có thể điền đầy đủ:
+Bảng 2 tổng hợp cách dbt hiện thực từng thực hành đã nêu ở Bảng 1.
+
+*Bảng 2. Các thực hành kỹ thuật phần mềm và cách hiện thực trong dbt.*
 
 | Software engineering | Trong dbt |
 |---|---|
