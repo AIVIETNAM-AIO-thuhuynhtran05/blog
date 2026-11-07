@@ -7,7 +7,7 @@ section: 'dbt'
 tags: [dbt, elt, data-modeling, data-testing, duckdb]
 ---
 
-> **Câu hỏi xuyên suốt bài:** "Con số doanh thu trên dashboard này từ đâu ra, và có đúng không?"
+> **Vấn đề đặt ra.** Với một chỉ số trên dashboard, chẳng hạn doanh thu, bài viết xem xét hai câu hỏi: chỉ số đó được tính từ những nguồn dữ liệu nào, và làm thế nào để kiểm chứng tính đúng đắn của nó.
 
 ## Mở đầu: một con số, hai đáp án
 
@@ -578,7 +578,7 @@ raw.order_returns ─► stg_ecommerce__order_returns ────────�
 raw.addresses ─────► stg_ecommerce__addresses ──► int_addresses__geography ─────────────────────┘
 ```
 
-> **Nhận xét.** Quay lại câu hỏi mở đầu: *"Con số doanh thu này từ đâu ra?"* Mở dbt docs, click vào `fact_sales`, xem lineage: nó đi từ `int_order_items__enriched`, qua `int_orders__enriched` (nơi seed `order_status_mapping` quyết định đơn nào được tính doanh thu), về các model staging, về các bảng raw. Tài liệu không bao giờ lỗi thời, vì nó được sinh ra từ chính code.
+> **Nhận xét.** Lineage trả lời câu hỏi thứ nhất nêu ở phần mở đầu, tức nguồn gốc của chỉ số doanh thu. Trong dbt docs, lineage của `fact_sales` cho thấy dữ liệu đi từ `int_order_items__enriched`, qua `int_orders__enriched` (nơi seed `order_status_mapping` xác định đơn nào được tính doanh thu), về các model staging và cuối cùng là các bảng raw. Vì tài liệu được sinh trực tiếp từ code, nó luôn phản ánh đúng trạng thái hiện tại của project.
 
 ### 14. CI/CD
 
@@ -704,7 +704,7 @@ Bảng 2 tổng hợp cách dbt hiện thực từng thực hành đã nêu ở 
 | CI/CD | `dbt build` trong pipeline, Slim CI với `state:modified+` |
 | DRY, thư viện | Jinja macros; packages như `dbt_utils`, `dbt_expectations` |
 
-Và câu hỏi xuyên suốt đã có câu trả lời: con số doanh thu **đến từ đâu** thì có lineage cho biết; **có đúng không** thì có test, contract và CI kiểm chứng.
+Hai câu hỏi đặt ra ở phần mở đầu được giải quyết như sau: **nguồn gốc** của chỉ số doanh thu được xác định qua lineage, còn **tính đúng đắn** của nó được kiểm chứng bằng test, contract và CI.
 
 ### Bài học rút ra
 
