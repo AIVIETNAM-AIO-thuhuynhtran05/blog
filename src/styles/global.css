@@ -1096,3 +1096,68 @@ mark.reader-hl {
   font-family: var(--font-sans);
   font-size: 0.9rem;
 }
+
+/* Khung gợi ý công cụ đọc ở đầu bài */
+.sel-hint {
+  margin: 1.25rem 0 1.75rem;
+  border: 1px dashed var(--gold);
+  border-radius: 8px;
+  background: var(--surface);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+}
+
+.sel-hint:not(:has(> :not([hidden]))),
+.sel-hint [hidden] {
+  display: none;
+}
+
+.sel-hint-tip,
+.sel-hint-count {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  padding: 0.7rem 0.9rem;
+}
+
+.sel-hint-tip + .sel-hint-count:not([hidden]) {
+  border-top: 1px dashed var(--line);
+}
+
+.sel-hint p {
+  flex: 1 1 16rem;
+  margin: 0;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.sel-hint-icon {
+  color: var(--gold);
+  font-size: 1.1rem;
+}
+
+.sel-hint-sample {
+  padding: 0.05em 0.15em;
+  border-radius: 2px;
+  background: var(--reader-hl);
+  color: inherit;
+  cursor: default;
+}
+
+.sel-hint-btn {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.sel-hint-btn:hover,
+.sel-hint-btn:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}

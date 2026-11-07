@@ -1,0 +1,28 @@
+---
+// Khung gợi ý đầu bài để người đọc biết có thể bôi đen để tô sáng / bình luận.
+// SelectionTools.astro cập nhật phần đếm số đoạn đã tô.
+---
+<aside class="sel-hint" aria-label="Công cụ đọc">
+  <div class="sel-hint-tip">
+    <span class="sel-hint-icon" aria-hidden="true">✎</span>
+    <p>
+      Bôi đen một đoạn bất kỳ trong bài để <mark class="sel-hint-sample">Tô sáng</mark> (chỉ bạn thấy, lưu trên trình duyệt
+      này) hoặc <strong>Bình luận đoạn này</strong>.
+    </p>
+    <button type="button" class="sel-hint-btn" data-hint="dismiss">Đã hiểu</button>
+  </div>
+  <div class="sel-hint-count" hidden>
+    <p>Bạn đã tô <strong data-hint="n">0</strong> đoạn trong bài này.</p>
+    <button type="button" class="sel-hint-btn" data-hint="first">Xem đoạn đầu</button>
+    <button type="button" class="sel-hint-btn" data-hint="clear">Xoá hết</button>
+  </div>
+</aside>
+
+<script is:inline>
+  // Ẩn ngay khi tải trang nếu người đọc đã bấm "Đã hiểu", tránh nháy giao diện
+  try {
+    if (localStorage.getItem('sel-hint-dismissed')) {
+      document.currentScript.previousElementSibling.querySelector('.sel-hint-tip').hidden = true;
+    }
+  } catch {}
+</script>

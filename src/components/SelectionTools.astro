@@ -41,7 +41,38 @@
       } catch {
         /* bỏ qua: tô sáng vẫn hiện trong phiên này */
       }
+      refreshHint();
     };
+
+    // ---- Khung gợi ý đầu bài ----
+    const hint = document.querySelector<HTMLElement>('.sel-hint');
+    const refreshHint = () => {
+      if (!hint) return;
+      const n = new Set([...prose.querySelectorAll<HTMLElement>('mark.reader-hl')].map((m) => m.dataset.hl)).size;
+      hint.querySelector<HTMLElement>('.sel-hint-count')!.hidden = n === 0;
+      hint.querySelector<HTMLElement>('[data-hint="n"]')!.textContent = String(n);
+    };
+    hint?.addEventListener('click', (e) => {
+      const action = (e.target as HTMLElement).closest<HTMLElement>('[data-hint]')?.dataset.hint;
+      if (action === 'dismiss') {
+        hint.querySelector<HTMLElement>('.sel-hint-tip')!.hidden = true;
+        try {
+          localStorage.setItem('sel-hint-dismissed', '1');
+        } catch {
+          /* chỉ ẩn trong phiên này */
+        }
+      } else if (action === 'first') {
+        const first = prose.querySelector<HTMLElement>('mark.reader-hl');
+        first?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        first?.animate([{ outline: '2px solid var(--gold)' }, { outline: '2px solid transparent' }], {
+          duration: 1600,
+        });
+      } else if (action === 'clear') {
+        if (!confirm('Xoá tất cả đoạn đã tô trong bài này?')) return;
+        load().forEach((h) => unwrap(h.id));
+        save([]);
+      }
+    });
 
     // ---- Quy đổi giữa vị trí ký tự trong bài và các text node ----
     const textNodes = () => {
