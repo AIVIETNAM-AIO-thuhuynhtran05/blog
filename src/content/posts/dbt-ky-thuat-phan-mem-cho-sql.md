@@ -205,7 +205,34 @@ select ... from {{ ref('int_orders') }}
 {% endif %}
 ```
 
-> **Cạm bẫy.** Incremental là materialization dễ sai nhất. Nếu một đơn hàng đến trễ (`updated_at` cũ hơn mốc max) nó sẽ bị bỏ qua mãi mãi. Nếu thiếu `unique_key`, dòng được cập nhật sẽ bị chèn trùng. Cách phòng: lọc lùi một khoảng an toàn (ví dụ max − 3 ngày), luôn có `unique_key`, và biết rằng `dbt build --full-refresh` sẽ dựng lại bảng từ đầu khi cần.
+Ở lần chạy đầu tiên, bảng chưa tồn tại nên `is_incremental()` trả về false và dbt xử lý toàn bộ dữ liệu. Từ lần thứ hai, dbt chỉ lấy những dòng có `updated_at` lớn hơn mốc lớn nhất đang có trong bảng. Incremental là materialization dễ sai nhất, và cả hai lỗi thường gặp đều nằm ở điều kiện lọc này.
+
+**Lỗi 1: dữ liệu đến trễ bị bỏ qua vĩnh viễn.** Dữ liệu đến trễ là những dòng phát sinh sớm nhưng được nạp vào kho muộn, chẳng hạn do hệ thống đối tác gửi chậm hoặc pipeline hôm trước bị lỗi.
+
+| Thời điểm | Sự kiện | Mốc `max(updated_at)` |
+|---|---|---|
+| Ngày 10, chạy dbt | Nạp các đơn đến hết ngày 10 | 10/11 |
+| Ngày 11 | Đơn #A (`updated_at` = 11/11) được nạp vào nguồn | |
+| Ngày 11 | Đơn #B (`updated_at` = 09/11) được nạp vào nguồn muộn | |
+| Ngày 11, chạy dbt | Điều kiện `updated_at > 10/11` lấy #A và bỏ qua #B | 11/11 |
+| Các ngày sau | Mốc chỉ tăng lên, #B không bao giờ thoả điều kiện | |
+
+Đơn #B có trong dữ liệu thô nhưng không bao giờ vào bảng, và dbt không báo lỗi. Cách phòng là lọc lùi một khoảng an toàn để mỗi lần chạy xử lý lại dữ liệu của vài ngày gần nhất:
+
+```sql
+where updated_at > (select max(updated_at) - interval 3 day from {{ this }})
+```
+
+**Lỗi 2: thiếu `unique_key` làm dữ liệu bị chèn trùng.** Khi không có `unique_key`, dbt chỉ thêm dòng mới vào bảng. Khi có `unique_key`, dbt merge: khoá đã tồn tại thì cập nhật, chưa có thì thêm mới.
+
+| Lần chạy | Dữ liệu mới | Không có `unique_key` | Có `unique_key='order_id'` |
+|---|---|---|---|
+| Ngày 10 | #100, `paid` | #100 paid | #100 paid |
+| Ngày 11 | #100, `shipped` | #100 paid, #100 shipped (trùng) | #100 shipped |
+
+Đơn #100 xuất hiện hai lần nên doanh thu bị tính đôi. Giống fan-out, lỗi này chỉ làm sai con số mà không làm câu query thất bại.
+
+> **Chú ý.** Hai cách phòng phải đi cùng nhau. Lọc lùi 3 ngày nghĩa là chủ động lấy lại các dòng đã nạp, nên bắt buộc phải có `unique_key` để các dòng đó được ghi đè thay vì chèn trùng. Khi bảng đã sai, hoặc khi đổi logic SQL hay thêm cột, chạy `dbt build --full-refresh` để dbt bỏ qua logic incremental và dựng lại bảng từ đầu.
 
 > **Trong project.** `fact_sales` vẫn là `table`, không phải incremental. Đơn hàng đổi trạng thái sau khi được tạo (pending → paid → shipped…), nhưng dữ liệu nguồn không có cột `updated_at`, nên mọi điều kiện lọc incremental đều sẽ bỏ sót những thay đổi đó. Với 100.000 dòng, build lại toàn bộ chỉ mất vài giây.
 
@@ -313,7 +340,7 @@ left join payments p using (order_id)               -- 1:1, không fan-out
 
 **Đặt tên:** nên dùng động từ hoặc mô tả hành động, ví dụ `int_payments_pivoted_to_orders`, `int_orders_joined_with_payments`, để người đọc đoán được model làm gì chỉ qua cái tên. **Materialization:** `ephemeral` (chỉ được chèn như CTE vào model phía sau) hoặc `view` (khi muốn query trực tiếp để debug). Tầng này **không** dành cho người dùng cuối hay dashboard.
 
-> **Cạm bẫy.** Không phải project nào cũng cần intermediate cho mọi thứ. Nếu một mart chỉ cần join hai model staging đơn giản thì làm thẳng ở mart. Hãy tạo intermediate khi (1) logic quá dài làm model marts khó đọc, (2) cùng một logic được dùng lại ở nhiều mart, hoặc (3) cần đổi grain trước khi join.
+> **Chú ý.** Không phải project nào cũng cần intermediate cho mọi thứ. Nếu một mart chỉ cần join hai model staging đơn giản thì làm thẳng ở mart. Hãy tạo intermediate khi (1) logic quá dài làm model marts khó đọc, (2) cùng một logic được dùng lại ở nhiều mart, hoặc (3) cần đổi grain trước khi join.
 
 #### 7.3 Marts: dữ liệu phục vụ phân tích
 
@@ -340,7 +367,7 @@ where o.status not in ('cancelled', 'returned')
 - **Materialization:** `table` cho nhanh khi đọc; `incremental` khi bảng lớn.
 - **Chất lượng:** đây là tầng cần tài liệu, test, và contract đầy đủ nhất, vì người khác phụ thuộc trực tiếp vào nó.
 
-> **Cạm bẫy.** Đừng tạo mart theo từng dashboard (`orders_for_ceo_dashboard`, `orders_for_marketing_v2`). Mỗi bảng sẽ có một định nghĩa hơi khác nhau, và ta quay lại đúng vấn đề "hai dashboard, hai con số" ở phần mở đầu. Mart nên xoay quanh **thực thể**; dashboard tự lọc và nhóm trên đó.
+> **Chú ý.** Đừng tạo mart theo từng dashboard (`orders_for_ceo_dashboard`, `orders_for_marketing_v2`). Mỗi bảng sẽ có một định nghĩa hơi khác nhau, và ta quay lại đúng vấn đề "hai dashboard, hai con số" ở phần mở đầu. Mart nên xoay quanh **thực thể**; dashboard tự lọc và nhóm trên đó.
 
 #### 7.4 Quy tắc phụ thuộc giữa các tầng
 
@@ -636,7 +663,7 @@ select
 from {{ ref('stg_orders') }}
 ```
 
-> **Cạm bẫy.** Jinja mạnh nhưng dễ làm code khó đọc. Nếu đồng nghiệp phải chạy `dbt compile` mới hiểu model làm gì, có lẽ bạn đã dùng Jinja quá tay.
+> **Chú ý.** Jinja mạnh nhưng dễ làm code khó đọc. Nếu đồng nghiệp phải chạy `dbt compile` mới hiểu model làm gì, có lẽ bạn đã dùng Jinja quá tay.
 
 > **Trong project.** Có ba macro, đều ngắn: `to_money(col)` ép cột tiền về `decimal(18,2)` ở mọi model staging; `date_key(col)` đổi ngày thành số nguyên dạng `YYYYMMDD` để khớp với `dim_date.date_key`; và `generate_schema_name` ghi đè cách đặt tên schema mặc định, để model trong `marts/core/` vào đúng schema `core` thay vì `analytics_core`.
 
