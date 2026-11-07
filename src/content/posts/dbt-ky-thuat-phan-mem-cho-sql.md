@@ -321,7 +321,7 @@ select * from renamed
 
 **Materialization:** `view`. Staging không cần lưu riêng một bản dữ liệu; nó luôn phản ánh bảng thô mới nhất. **Test tối thiểu:** `unique` và `not_null` trên khoá chính của mỗi model staging. Lỗi dữ liệu nguồn nên bị bắt ở đây, càng sớm càng tốt.
 
-> **Nhận xét.** Staging tách các model phía sau khỏi cấu trúc của hệ thống nguồn. Các model khác chỉ đọc tên cột và đơn vị đã chuẩn hoá ở staging, như `payment_id` hay `amount` tính bằng đồng. Khi nguồn đổi tên cột hoặc đổi đơn vị tiền, chỉ cần sửa model staging tương ứng, còn các model phía sau giữ nguyên.
+> **Nhận xét.** Staging nằm giữa hệ thống nguồn và phần còn lại của project. Nếu nguồn đổi tên cột hay đổi tiền từ xu sang đồng, bạn chỉ cần sửa một file staging, các model phía sau không phải sửa gì.
 
 #### 7.2 Intermediate: tích hợp dữ liệu và logic nghiệp vụ
 
