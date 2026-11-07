@@ -1,0 +1,247 @@
+---
+// Bôi đen một đoạn trong bài để tô sáng (lưu riêng trong trình duyệt người đọc)
+// hoặc trích đoạn đó vào khung góp ý.
+---
+<div class="sel-tools" role="toolbar" aria-label="Công cụ cho đoạn đã chọn" hidden>
+  <button type="button" data-action="highlight">Tô sáng</button>
+  <button type="button" data-action="unhighlight" hidden>Bỏ tô sáng</button>
+  <button type="button" data-action="comment">Bình luận đoạn này</button>
+</div>
+<div class="sel-toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+  type Saved = { id: string; start: number; end: number; text: string };
+
+  const prose = document.querySelector<HTMLElement>('.prose');
+  const bar = document.querySelector<HTMLElement>('.sel-tools');
+  const toast = document.querySelector<HTMLElement>('.sel-toast');
+
+  if (prose && bar && toast) {
+    const key = `highlights:${location.pathname}`;
+    const btnHighlight = bar.querySelector<HTMLButtonElement>('[data-action="highlight"]')!;
+    const btnUnhighlight = bar.querySelector<HTMLButtonElement>('[data-action="unhighlight"]')!;
+    const btnComment = bar.querySelector<HTMLButtonElement>('[data-action="comment"]')!;
+    const hasComments = !!document.querySelector('.comments');
+    btnComment.hidden = !hasComments;
+
+    let activeId: string | null = null;
+
+    // ---- Lưu trữ (localStorage có thể bị chặn, nên luôn bọc try/catch) ----
+    const load = (): Saved[] => {
+      try {
+        return JSON.parse(localStorage.getItem(key) ?? '[]');
+      } catch {
+        return [];
+      }
+    };
+    const save = (items: Saved[]) => {
+      try {
+        if (items.length) localStorage.setItem(key, JSON.stringify(items));
+        else localStorage.removeItem(key);
+      } catch {
+        /* bỏ qua: tô sáng vẫn hiện trong phiên này */
+      }
+    };
+
+    // ---- Quy đổi giữa vị trí ký tự trong bài và các text node ----
+    const textNodes = () => {
+      const nodes: Text[] = [];
+      const walker = document.createTreeWalker(prose, NodeFilter.SHOW_TEXT);
+      while (walker.nextNode()) nodes.push(walker.currentNode as Text);
+      return nodes;
+    };
+
+    const offsetOf = (node: Node, offset: number) => {
+      let total = 0;
+      for (const t of textNodes()) {
+        if (t === node) return total + offset;
+        total += t.data.length;
+      }
+      // Điểm đầu/cuối rơi vào một phần tử chứ không phải text node
+      const range = document.createRange();
+      range.setStart(prose, 0);
+      range.setEnd(node, offset);
+      return range.toString().length;
+    };
+
+    const fullText = () => textNodes().map((t) => t.data).join('');
+
+    const wrap = (start: number, end: number, id: string) => {
+      let pos = 0;
+      for (const t of textNodes()) {
+        const len = t.data.length;
+        const from = Math.max(start, pos);
+        const to = Math.min(end, pos + len);
+        pos += len;
+        if (from >= to) continue;
+        if (!t.data.slice(from - (pos - len), to - (pos - len)).trim()) continue;
+        let target = t;
+        const localStart = from - (pos - len);
+        if (localStart > 0) target = target.splitText(localStart);
+        if (to - from < target.data.length) target.splitText(to - from);
+        const mark = document.createElement('mark');
+        mark.className = 'reader-hl';
+        mark.dataset.hl = id;
+        mark.title = 'Bấm để bỏ tô sáng';
+        target.replaceWith(mark);
+        mark.append(target);
+      }
+    };
+
+    const unwrap = (id: string) => {
+      prose.querySelectorAll<HTMLElement>(`mark.reader-hl[data-hl="${id}"]`).forEach((m) => {
+        m.replaceWith(...m.childNodes);
+      });
+      prose.normalize();
+    };
+
+    // Bài có thể đã được sửa sau khi người đọc tô: nếu đoạn chữ lệch vị trí thì tìm lại theo nội dung
+    const restore = () => {
+      const text = fullText();
+      const kept: Saved[] = [];
+      for (const h of load()) {
+        let start = h.start;
+        if (text.slice(h.start, h.end) !== h.text) {
+          const found = text.indexOf(h.text);
+          if (found === -1) continue;
+          start = found;
+        }
+        wrap(start, start + h.text.length, h.id);
+        kept.push({ ...h, start, end: start + h.text.length });
+      }
+      save(kept);
+    };
+
+    // ---- Thanh công cụ ----
+    const hideBar = () => {
+      bar.hidden = true;
+      activeId = null;
+    };
+
+    const showBar = (rect: DOMRect, mode: 'selection' | 'mark') => {
+      btnHighlight.hidden = mode !== 'selection';
+      btnUnhighlight.hidden = mode !== 'mark';
+      btnComment.hidden = !hasComments;
+      bar.hidden = false;
+      const touch = matchMedia('(pointer: coarse)').matches;
+      const { width, height } = bar.getBoundingClientRect();
+      const left = Math.min(
+        Math.max(8, rect.left + rect.width / 2 - width / 2),
+        document.documentElement.clientWidth - width - 8,
+      );
+      // Trên điện thoại đặt bên dưới để không đè lên menu chọn chữ của hệ điều hành
+      let top = touch ? rect.bottom + 10 : rect.top - height - 8;
+      if (top < 8) top = rect.bottom + 10;
+      bar.style.left = `${left + scrollX}px`;
+      bar.style.top = `${top + scrollY}px`;
+    };
+
+    const currentSelection = () => {
+      const sel = getSelection();
+      if (!sel || sel.isCollapsed || !sel.rangeCount) return null;
+      const range = sel.getRangeAt(0);
+      if (!prose.contains(range.commonAncestorContainer)) return null;
+      const text = range.toString();
+      if (!text.trim()) return null;
+      return { range, text };
+    };
+
+    let timer: number | undefined;
+    document.addEventListener('selectionchange', () => {
+      clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        const s = currentSelection();
+        if (s) {
+          activeId = null;
+          showBar(s.range.getBoundingClientRect(), 'selection');
+        } else if (!activeId) {
+          hideBar();
+        }
+      }, 200);
+    });
+
+    prose.addEventListener('click', (e) => {
+      const mark = (e.target as HTMLElement).closest<HTMLElement>('mark.reader-hl');
+      if (!mark || currentSelection()) return;
+      activeId = mark.dataset.hl!;
+      showBar(mark.getBoundingClientRect(), 'mark');
+    });
+
+    document.addEventListener('pointerdown', (e) => {
+      const target = e.target as HTMLElement;
+      if (!bar.contains(target) && !target.closest('mark.reader-hl')) hideBar();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') hideBar();
+    });
+
+    // Giữ nguyên vùng chọn khi bấm nút
+    bar.addEventListener('mousedown', (e) => e.preventDefault());
+
+    const notify = (msg: string) => {
+      toast.textContent = msg;
+      toast.hidden = false;
+      clearTimeout(Number(toast.dataset.timer));
+      toast.dataset.timer = String(window.setTimeout(() => (toast.hidden = true), 3500));
+    };
+
+    btnHighlight.addEventListener('click', () => {
+      const s = currentSelection();
+      if (!s) return;
+      const start = offsetOf(s.range.startContainer, s.range.startOffset);
+      const end = offsetOf(s.range.endContainer, s.range.endOffset);
+      const text = fullText().slice(start, end);
+      const id = Math.random().toString(36).slice(2, 10);
+      wrap(start, end, id);
+      save([...load(), { id, start, end, text }]);
+      getSelection()?.removeAllRanges();
+      hideBar();
+    });
+
+    btnUnhighlight.addEventListener('click', () => {
+      if (!activeId) return;
+      unwrap(activeId);
+      save(load().filter((h) => h.id !== activeId));
+      hideBar();
+    });
+
+    btnComment.addEventListener('click', async () => {
+      const text = activeId ? load().find((h) => h.id === activeId)?.text : currentSelection()?.text;
+      if (!text) return;
+      const quote = text
+        .trim()
+        .split(/\n+/)
+        .map((line) => `> ${line.trim()}`)
+        .join('\n');
+      let copied = false;
+      try {
+        await navigator.clipboard.writeText(`${quote}\n\n`);
+        copied = true;
+      } catch {
+        // Dự phòng cho trình duyệt chặn Clipboard API
+        const area = document.createElement('textarea');
+        area.value = `${quote}\n\n`;
+        area.setAttribute('readonly', '');
+        area.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+        document.body.append(area);
+        area.select();
+        try {
+          copied = document.execCommand('copy');
+        } catch {
+          /* vẫn không chép được */
+        }
+        area.remove();
+      }
+      getSelection()?.removeAllRanges();
+      hideBar();
+      document.querySelector('.comments')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      notify(
+        copied
+          ? 'Đã chép đoạn trích. Dán (Ctrl+V) vào khung góp ý rồi viết ý kiến của bạn bên dưới nhé.'
+          : 'Không chép tự động được, bạn chép tay đoạn trích rồi dán vào khung góp ý nhé.',
+      );
+    });
+
+    restore();
+  }
+</script>

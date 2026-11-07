@@ -9,6 +9,7 @@
   --prompt: #8a5a12;
   --gold: #b98a2f;
   --highlight: #f5e3ae;
+  --reader-hl: rgb(242 201 76 / 45%);
   --header-bg: rgb(252 248 238 / 88%);
   --font-serif: 'Source Serif 4 Variable', Georgia, serif;
   --font-sans: 'Inter Variable', system-ui, sans-serif;
@@ -27,6 +28,7 @@
   --prompt: #e3b866;
   --gold: #c9a14f;
   --highlight: #574419;
+  --reader-hl: rgb(201 161 79 / 40%);
   --header-bg: rgb(20 26 22 / 88%);
   color-scheme: dark;
 }
@@ -1031,4 +1033,66 @@ img.cover-contain {
     padding-left: 2rem;
     border-left: 1px solid var(--line);
   }
+}
+
+/* Tô sáng của người đọc và thanh công cụ khi bôi đen */
+mark.reader-hl {
+  padding: 0.05em 0;
+  border-radius: 2px;
+  background: var(--reader-hl);
+  color: inherit;
+  cursor: pointer;
+}
+
+.sel-tools {
+  position: absolute;
+  z-index: 50;
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 4px 14px rgb(0 0 0 / 14%);
+  font-family: var(--font-sans);
+}
+
+.sel-tools[hidden],
+.sel-tools button[hidden],
+.sel-toast[hidden] {
+  display: none;
+}
+
+.sel-tools button {
+  padding: 0.35rem 0.7rem;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.sel-tools button:hover,
+.sel-tools button:focus-visible {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.sel-toast {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  z-index: 60;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  padding: 0.6rem 1rem;
+  transform: translateX(-50%);
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--bg);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
 }

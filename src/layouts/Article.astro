@@ -2,6 +2,7 @@
 import 'katex/dist/katex.min.css';
 import Base from './Base.astro';
 import Comments from '../components/Comments.astro';
+import SelectionTools from '../components/SelectionTools.astro';
 import { site } from '../site.config';
 
 const { title, description, type = 'article' } = Astro.props as {
@@ -22,4 +23,5 @@ const { title, description, type = 'article' } = Astro.props as {
     <slot name="after" />
     <Comments />
   </article>
+  <SelectionTools />
 </Base>
