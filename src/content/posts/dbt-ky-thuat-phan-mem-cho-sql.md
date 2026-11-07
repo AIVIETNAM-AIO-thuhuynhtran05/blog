@@ -234,7 +234,21 @@ where updated_at > (select max(updated_at) - interval 3 day from {{ this }})
 
 > **Chú ý.** Hai cách phòng phải đi cùng nhau. Lọc lùi 3 ngày nghĩa là chủ động lấy lại các dòng đã nạp, nên bắt buộc phải có `unique_key` để các dòng đó được ghi đè thay vì chèn trùng. Khi bảng đã sai, hoặc khi đổi logic SQL hay thêm cột, chạy `dbt build --full-refresh` để dbt bỏ qua logic incremental và dựng lại bảng từ đầu.
 
-> **Trong project.** `fact_sales` vẫn là `table`, không phải incremental. Đơn hàng đổi trạng thái sau khi được tạo (pending → paid → shipped…), nhưng dữ liệu nguồn không có cột `updated_at`, nên mọi điều kiện lọc incremental đều sẽ bỏ sót những thay đổi đó. Với 100.000 dòng, build lại toàn bộ chỉ mất vài giây.
+> **Trong project.** `fact_sales` vẫn là `table`, không phải incremental. Lý do nằm ở dữ liệu nguồn: bảng `raw.orders` chỉ có `created_at` (thời điểm tạo đơn), không có `updated_at` (thời điểm sửa gần nhất). Khi đơn đổi trạng thái, cột `order_status_id` thay đổi nhưng `created_at` giữ nguyên, nên không có cột nào cho biết dòng nào vừa thay đổi.
+>
+> Nếu dùng `created_at` làm điều kiện lọc, đơn #100 sẽ đi như sau:
+>
+> | Ngày | Trong nguồn | Điều kiện `created_at > max(created_at)` | Trong `fact_sales` |
+> |---|---|---|---|
+> | 01/11 | #100 được tạo, `pending` | Lấy #100 | #100 `pending` |
+> | 03/11 | #100 chuyển sang `paid`, `created_at` vẫn là 01/11 | Mốc đã là 02/11, bỏ qua #100 | #100 `pending` |
+> | 05/11 | #100 chuyển sang `shipped` | Bỏ qua #100 | #100 `pending` |
+>
+> Đơn #100 kẹt ở `pending`. Theo seed `order_status_mapping`, trạng thái này có `counts_as_revenue = false`, nên doanh thu của đơn không bao giờ được ghi nhận dù khách đã thanh toán và nhận hàng. Lọc lùi một khoảng an toàn cũng không giải quyết được: trạng thái có thể đổi sau vài tuần (giao hàng, hoàn tiền), nên khoảng lùi phải dài bằng toàn bộ lịch sử, tức là build lại cả bảng.
+>
+> Một hướng khác là lấy thời điểm thay đổi từ bảng `raw.audit_logs`, nơi ghi lại các thao tác `insert`, `update`, `delete` kèm `performed_at`. Kiểm tra cho thấy hướng này cũng không dùng được: trong 421 bản ghi `update` trên bảng orders, chỉ 37 bản ghi khớp với một đơn có thật, và 20 trong số đó có `performed_at` sớm hơn `created_at` của đơn.
+>
+> Vì vậy `table` là lựa chọn hợp lý. Với khoảng 100.000 dòng, DuckDB build lại toàn bộ trong vài giây, và mỗi lần build đều phản ánh trạng thái mới nhất của mọi đơn. Incremental chỉ đáng cân nhắc khi bảng đủ lớn để build toàn bộ trở nên chậm, và nguồn có cột thời điểm cập nhật đáng tin cậy.
 
 ## Phần III. Thiết kế dữ liệu
 
