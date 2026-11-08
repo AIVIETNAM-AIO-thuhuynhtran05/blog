@@ -478,9 +478,19 @@ join {{ ref('stg_payments') }} p
 | C | P2 | 100 |
 | **Tổng** | | **900 (thực tế 300)** |
 
-Đây gọi là **fan-out**: một quan hệ một-nhiều bị nhân với một quan hệ một-nhiều khác, số dòng "nở" ra, và mọi phép `sum()` phía sau đều bị đội lên. Câu SQL không báo lỗi. Kết quả trông vẫn hợp lý. Chỉ có con số là sai.
+Đây gọi là **fan-out**: một quan hệ một-nhiều bị nhân với một quan hệ một-nhiều khác, số dòng tăng lên, và mọi phép `sum()` phía sau đều bị đội lên. Câu SQL vẫn chạy bình thường, không báo lỗi, nên chỉ nhìn kết quả thì khó biết là sai.
 
-**Cách sửa:** đưa từng bảng về **cùng grain** trước khi join. Tổng hợp payments về mức đơn hàng (một dòng mỗi `order_id`), rồi mới join ở mức đơn hàng:
+Fan-out nhân cả hai phía. Trong bảng trên, mỗi payment lặp lại 3 lần (theo số item), và mỗi item cũng lặp lại 2 lần (theo số payment). Nếu tính thêm `sum(i.price * i.quantity)` trên cùng kết quả join, subtotal 300 sẽ thành 600.
+
+#### 9.1 Vì sao lỗi này khó phát hiện
+
+Hệ số nhân của mỗi đơn bằng số dòng ở phía "nhiều" còn lại. Trong dữ liệu thật, phần lớn đơn chỉ có một lần thanh toán, nên hệ số là 1 và các đơn đó vẫn ra đúng. Chỉ những đơn trả nhiều lần (trả góp, chia hai thẻ, dùng thêm ví hoặc voucher) mới bị cộng dư. Tổng doanh thu vì vậy chỉ lệch vài phần trăm, đủ nhỏ để nhìn dashboard không thấy gì bất thường, nhưng sẽ không khớp khi đối chiếu với số liệu kế toán.
+
+Lỗi cũng có thể xuất hiện muộn. Lúc viết model, hệ thống thanh toán chỉ cho trả một lần, join thẳng vẫn đúng. Vài tháng sau có thêm tính năng trả góp, model không đổi một dòng nào nhưng con số bắt đầu sai.
+
+#### 9.2 Cách sửa: gom về cùng grain rồi mới join
+
+Đưa từng bảng về **cùng grain** trước khi join. Ở đây grain chung là đơn hàng, nên gom payments và order_items về một dòng mỗi `order_id`:
 
 ```sql
 -- models/intermediate/int_payments_agg.sql
@@ -488,6 +498,59 @@ select order_id, sum(amount) as total_paid     -- grain: 1 dòng / order
 from {{ ref('stg_payments') }}
 group by order_id
 ```
+
+```sql
+-- models/intermediate/int_order_items_agg.sql
+select
+    order_id,
+    count(*)                as item_count,
+    sum(price * quantity)   as items_total     -- grain: 1 dòng / order
+from {{ ref('stg_order_items') }}
+group by order_id
+```
+
+Sau đó join cả hai vào `stg_orders`. Mỗi bên chỉ có tối đa một dòng cho mỗi `order_id`, nên số dòng của kết quả bằng đúng số đơn hàng:
+
+```sql
+-- models/marts/fact_orders.sql (rút gọn)
+select
+    o.order_id,
+    i.item_count,
+    i.items_total,
+    coalesce(p.total_paid, 0) as total_paid
+from {{ ref('stg_orders') }} o
+left join {{ ref('int_order_items_agg') }} i on i.order_id = o.order_id
+left join {{ ref('int_payments_agg') }}    p on p.order_id = o.order_id
+```
+
+| order_id | item_count | items_total | total_paid |
+|---|---|---|---|
+| 1001 | 3 | 300 | 300 |
+
+Dùng `left join` để giữ lại các đơn chưa có thanh toán; với các đơn này `total_paid` là null nên cần `coalesce` về 0.
+
+Trường hợp cần giữ grain dòng sản phẩm (như `fact_sales`) mà vẫn muốn có thông tin thanh toán, không gắn thẳng `total_paid` vào từng dòng, vì cộng lại sẽ bị nhân theo số dòng sản phẩm. Có hai cách:
+
+- Để số tiền cấp đơn ở fact cấp đơn (`fact_orders`). Ai cần thì join ở grain đơn hàng.
+- Phân bổ số tiền về từng dòng theo tỷ lệ, ví dụ `total_paid * line_total / items_total`. Khi đó tổng các dòng của một đơn bằng đúng `total_paid` và cột này cộng được ở grain dòng.
+
+#### 9.3 Những cách sửa nhanh nên tránh
+
+- `sum(distinct p.amount)`: chỉ đúng khi các khoản tiền khác nhau. Đơn trả hai lần, mỗi lần 100, sẽ chỉ được tính 100.
+- `select distinct` sau khi join: chỉ bỏ được các dòng trùng hoàn toàn. Trong bảng trên, các dòng khác nhau ở cột item nên không dòng nào bị bỏ.
+- Chia ngược lại, ví dụ `sum(p.amount) / count(distinct i.order_item_id)`: cho kết quả đúng với ví dụ này nhưng khó đọc, và sai ngay khi join thêm một bảng một-nhiều thứ ba.
+
+Riêng `count(distinct o.order_id)` thì vẫn đúng sau fan-out, vì nó đếm khoá chứ không cộng giá trị.
+
+#### 9.4 Thực tế làm như thế nào
+
+Gom về cùng grain rồi mới join là cách làm chuẩn trong các project dbt:
+
+- Project mẫu `jaffle_shop` của dbt Labs làm đúng như vậy: model `customers` gom orders và payments trong các CTE riêng về một dòng mỗi khách hàng rồi mới join.
+- Hướng dẫn cấu trúc project của dbt đặt bước này vào tầng intermediate và gợi ý ghi grain đích vào tên model, ví dụ `int_payments_pivoted_to_orders`. Project này dùng `int_orders__payments_agg`.
+- Mỗi model mart ghi rõ grain trong description và có test `unique` + `not_null` trên khoá grain. Nếu grain gồm nhiều cột thì dùng `dbt_utils.unique_combination_of_columns`. Đây là cách bắt fan-out hiệu quả nhất, vì test fail ngay ở lần build đầu tiên có dữ liệu bị nhân.
+- Với các chỉ số quan trọng như doanh thu, nhiều team viết thêm singular test so tổng ở mart với tổng ở staging. Nếu lệch quá ngưỡng cho phép thì build thất bại.
+- Một số công cụ BI và semantic layer cũng xử lý lỗi này. Looker có symmetric aggregates để tính đúng tổng sau khi join một-nhiều. dbt Semantic Layer (MetricFlow) không cho phép các kiểu join có thể làm nhân dòng. Tuy vậy, khi người dùng tự viết SQL trên warehouse hoặc kéo bảng ra Excel thì không có lớp nào xử lý giúp, nên mart vẫn cần đúng grain ngay từ đầu.
 
 > **Điểm nhấn.** Trước mỗi phép join, hãy tự hỏi: *"grain của hai bên là gì, và grain của kết quả là gì?"* Ghi grain vào phần mô tả của mỗi model, và dùng test để khoá nó lại: `unique` trên khoá của grain sẽ fail ngay lập tức nếu fan-out xảy ra (xem Phần IV).
 
