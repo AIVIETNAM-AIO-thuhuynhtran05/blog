@@ -537,7 +537,7 @@ Trường hợp cần giữ grain dòng sản phẩm (như `fact_sales`) mà v�
 #### 9.3 Những cách sửa nhanh nên tránh
 
 - `sum(distinct p.amount)`: chỉ đúng khi các khoản tiền khác nhau. Đơn trả hai lần, mỗi lần 100, sẽ chỉ được tính 100.
-- `select distinct` sau khi join: chỉ bỏ được các dòng trùng hoàn toàn. Trong bảng trên, các dòng khác nhau ở cột item nên không dòng nào bị bỏ.
+- `select distinct` sau khi join: `distinct` chỉ bỏ một dòng khi nó giống hệt một dòng khác ở tất cả các cột được select. Trong bảng trên, `A, P1, 200` và `B, P1, 200` cùng payment, cùng số tiền nhưng khác cột item, nên vẫn được tính là hai dòng khác nhau. Cả 6 dòng đều được giữ và tổng vẫn là 900. Nếu bỏ cột item, chỉ `select distinct payment_id, amount`, thì còn 2 dòng và tổng ra 300. Nhưng khi đó kết quả chỉ là bảng payments ban đầu, join với order_items không còn tác dụng gì. Còn nếu bỏ luôn `payment_id`, chỉ giữ `amount`, thì sẽ sai giống `sum(distinct)`: hai lần thanh toán cùng 100 chỉ còn một dòng.
 - Chia ngược lại, ví dụ `sum(p.amount) / count(distinct i.order_item_id)`: cho kết quả đúng với ví dụ này nhưng khó đọc, và sai ngay khi join thêm một bảng một-nhiều thứ ba.
 
 Riêng `count(distinct o.order_id)` thì vẫn đúng sau fan-out, vì nó đếm khoá chứ không cộng giá trị.
