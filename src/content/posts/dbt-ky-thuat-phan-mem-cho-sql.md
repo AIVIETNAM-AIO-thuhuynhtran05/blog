@@ -634,7 +634,7 @@ Gom về cùng grain rồi mới join là cách làm chuẩn trong các project 
 
 ## Phần IV. Dữ liệu đáng tin cậy
 
-Phần II và III trả lời được "con số đến từ đâu". Phần này trả lời nửa còn lại của câu hỏi: **"nó có đúng không?"** Nguyên tắc rất đơn giản: *dữ liệu được tạo ra bằng code, mà đã là code thì phải có test.*
+Phần II và III cho biết mỗi con số được tính từ đâu. Phần này nói về cách kiểm tra con số đó có đúng không. Dữ liệu trong dbt được tạo ra bằng code, nên cũng cần được test như code.
 
 ### 10. Data tests: kiểm tra dữ liệu thật
 
