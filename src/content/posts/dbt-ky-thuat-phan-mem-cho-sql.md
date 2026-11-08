@@ -553,12 +553,68 @@ Trường hợp cần giữ grain dòng sản phẩm (như `fact_sales`) mà v�
   | P2 | 100 |
 
   `select distinct amount` chỉ còn một dòng 100, tổng ra 100 thay vì 200.
-- Chia ngược lại, ví dụ `sum(p.amount) / count(distinct i.order_item_id)`: với đơn #1001 thì 900 / 3 = 300, đúng, vì mỗi payment bị lặp đúng 3 lần theo số item. Cách này chỉ đúng khi biết chắc hệ số nhân, và sai trong ba trường hợp:
-  - Tính trên nhiều đơn cùng lúc. Mỗi đơn có hệ số nhân khác nhau. Thêm đơn #1002 có 1 item, trả 1 lần 50, thì tổng sau join là 900 + 50 = 950, chia cho 4 item ra 237,5 thay vì 350. Muốn đúng phải chia trong từng đơn (`group by order_id`) rồi mới cộng lại, tức là group by hai tầng.
-  - Join thêm một bảng một-nhiều thứ ba. Nếu đơn #1001 giao làm 2 lần thì có 3 × 2 × 2 = 12 dòng, tổng thành 1800, chia cho 3 ra 600. Phải chia thêm cho số lần giao, và mỗi lần thêm bảng lại phải sửa công thức.
-  - Đơn không có item. Với `left join`, `count(distinct i.order_item_id)` bằng 0, phép chia báo lỗi hoặc ra null tuỳ warehouse.
+- Chia ngược lại, ví dụ `sum(p.amount) / count(distinct i.order_item_id)`. Ý tưởng là mỗi payment bị lặp lại đúng bằng số item của đơn, nên chia lại cho số item. Cách này chỉ đúng khi hệ số nhân đó cố định. Để thấy khi nào nó sai, xét dữ liệu của ba đơn:
 
-  Người đọc code sau này cũng khó hiểu vì sao phải chia cho số item, vì phép chia này thực chất là để sửa lỗi nhân dòng.
+  `order_items`:
+
+  | order_id | item | price |
+  |---|---|---|
+  | 1001 | A | 100 |
+  | 1001 | B | 100 |
+  | 1001 | C | 100 |
+  | 1002 | D | 50 |
+
+  `payments`:
+
+  | order_id | payment | amount |
+  |---|---|---|
+  | 1001 | P1 | 200 |
+  | 1001 | P2 | 100 |
+  | 1002 | P3 | 50 |
+  | 1003 | P4 | 80 |
+
+  Đơn #1001 có 3 item và trả 2 lần, đơn #1002 có 1 item và trả 1 lần, đơn #1003 đã thanh toán nhưng chưa có item nào (ví dụ dữ liệu item về trễ).
+
+  Chỉ xét riêng đơn #1001, phép chia cho kết quả đúng: sau join có 6 dòng như bảng ở đầu mục, `sum(amount)` = 900, có 3 item, 900 / 3 = 300.
+
+  Trường hợp 1: tính trên nhiều đơn cùng lúc. Khi tính tổng doanh thu cho cả #1001 và #1002:
+
+  | Đơn | Số item | Số payment | Số dòng sau join | sum(amount) sau join | Giá trị đúng |
+  |---|---|---|---|---|---|
+  | #1001 | 3 | 2 | 6 | 900 | 300 |
+  | #1002 | 1 | 1 | 1 | 50 | 50 |
+  | Cả hai đơn | 4 | 3 | 7 | 950 | 350 |
+
+  Chia trên cả bảng ra 950 / 4 = 237,5, trong khi đúng là 350. Lý do là đơn #1001 bị nhân 3 còn đơn #1002 bị nhân 1, không có một số chung nào để chia. Muốn đúng phải chia trong từng đơn (`group by order_id`) rồi mới cộng lại, tức là group by hai tầng.
+
+  Trường hợp 2: join thêm một bảng một-nhiều thứ ba. Giả sử đơn #1001 được giao làm 2 lần, S1 và S2. Mỗi dòng trong 6 dòng cũ lại nhân đôi theo shipment:
+
+  | item | payment | shipment | amount |
+  |---|---|---|---|
+  | A | P1 | S1 | 200 |
+  | A | P1 | S2 | 200 |
+  | A | P2 | S1 | 100 |
+  | A | P2 | S2 | 100 |
+  | B | P1 | S1 | 200 |
+  | B | P1 | S2 | 200 |
+  | B | P2 | S1 | 100 |
+  | B | P2 | S2 | 100 |
+  | C | P1 | S1 | 200 |
+  | C | P1 | S2 | 200 |
+  | C | P2 | S1 | 100 |
+  | C | P2 | S2 | 100 |
+
+  `sum(amount)` = 1800, chia cho 3 item ra 600 thay vì 300. Phải chia thêm cho số shipment, và mỗi lần join thêm bảng lại phải sửa công thức.
+
+  Trường hợp 3: đơn không có item. Đơn #1003 khi `left join` với `order_items` chỉ có một dòng, cột item là null:
+
+  | order_id | item | payment | amount |
+  |---|---|---|---|
+  | 1003 | null | P4 | 80 |
+
+  `count(distinct i.order_item_id)` bằng 0, nên 80 / 0 báo lỗi chia cho 0 hoặc ra null tuỳ warehouse. Khoản thanh toán 80 bị mất khỏi báo cáo hoặc làm hỏng cả câu query.
+
+  Ngoài ra, người đọc code sau này cũng khó hiểu vì sao phải chia cho số item, vì phép chia này thực chất là để sửa lỗi nhân dòng.
 
 Riêng `count(distinct o.order_id)` thì vẫn đúng sau fan-out, vì nó đếm khoá chứ không cộng giá trị.
 
