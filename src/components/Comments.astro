@@ -7,6 +7,9 @@ const { repo, repoId, categoryId, category } = site.comments;
   <section class="comments" data-repo={repo} data-repo-id={repoId} data-category={category} data-category-id={categoryId}>
     <h2>Góp ý</h2>
     <p>Bạn thấy chỗ nào chưa đúng hay muốn trao đổi thêm thì để lại góp ý cho mình nha. Cần đăng nhập GitHub để bình luận. Mẹo: bôi đen một đoạn trong bài rồi bấm <em>Bình luận đoạn này</em> để trích đoạn đó vào góp ý.</p>
+    <p class="comments-edit" hidden>
+      Muốn sửa hoặc xoá góp ý đã gửi? Mở <a class="comments-edit-link" target="_blank" rel="noopener">thảo luận của bài này trên GitHub</a>, bấm vào dấu <strong>···</strong> ở góc bình luận của bạn rồi chọn <em>Edit</em> hoặc <em>Delete</em>. Sau khi sửa, tải lại trang này để thấy nội dung mới.
+    </p>
     <div class="giscus"></div>
   </section>
 )}
@@ -27,13 +30,27 @@ const { repo, repoId, categoryId, category } = site.comments;
       mapping: 'pathname',
       strict: '1',
       reactionsEnabled: '1',
-      emitMetadata: '0',
+      emitMetadata: '1',
       inputPosition: 'top',
       theme: theme(),
       lang: 'vi',
       loading: 'lazy',
     }).forEach(([key, value]) => (script.dataset[key] = value));
     section.append(script);
+
+    // giscus không có nút sửa bình luận, nên lấy link thảo luận từ metadata
+    // và hiện hướng dẫn sửa trên GitHub khi bài đã có ít nhất một bình luận.
+    const editNote = section.querySelector<HTMLElement>('.comments-edit');
+    const editLink = section.querySelector<HTMLAnchorElement>('.comments-edit-link');
+    window.addEventListener('message', (event) => {
+      if (event.origin !== 'https://giscus.app') return;
+      const discussion = event.data?.giscus?.discussion;
+      if (typeof discussion?.url !== 'string' || !discussion.url.startsWith('https://github.com/')) return;
+      if (!editNote || !editLink) return;
+      const count = (discussion.totalCommentCount ?? 0) + (discussion.totalReplyCount ?? 0);
+      editLink.href = discussion.url;
+      editNote.hidden = count === 0;
+    });
 
     // Đổi sáng/tối trên blog thì khung góp ý đổi theo
     new MutationObserver(() => {
