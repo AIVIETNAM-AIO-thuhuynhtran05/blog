@@ -538,7 +538,12 @@ Trường hợp cần giữ grain dòng sản phẩm (như `fact_sales`) mà v�
 
 - `sum(distinct p.amount)`: chỉ đúng khi các khoản tiền khác nhau. Đơn trả hai lần, mỗi lần 100, sẽ chỉ được tính 100.
 - `select distinct` sau khi join: `distinct` chỉ bỏ một dòng khi nó giống hệt một dòng khác ở tất cả các cột được select. Trong bảng trên, `A, P1, 200` và `B, P1, 200` cùng payment, cùng số tiền nhưng khác cột item, nên vẫn được tính là hai dòng khác nhau. Cả 6 dòng đều được giữ và tổng vẫn là 900. Nếu bỏ cột item, chỉ `select distinct payment_id, amount`, thì còn 2 dòng và tổng ra 300. Nhưng khi đó kết quả chỉ là bảng payments ban đầu, join với order_items không còn tác dụng gì. Còn nếu bỏ luôn `payment_id`, chỉ giữ `amount`, thì sẽ sai giống `sum(distinct)`: hai lần thanh toán cùng 100 chỉ còn một dòng.
-- Chia ngược lại, ví dụ `sum(p.amount) / count(distinct i.order_item_id)`: cho kết quả đúng với ví dụ này nhưng khó đọc, và sai ngay khi join thêm một bảng một-nhiều thứ ba.
+- Chia ngược lại, ví dụ `sum(p.amount) / count(distinct i.order_item_id)`: với đơn #1001 thì 900 / 3 = 300, đúng, vì mỗi payment bị lặp đúng 3 lần theo số item. Cách này chỉ đúng khi biết chắc hệ số nhân, và sai trong ba trường hợp:
+  - Tính trên nhiều đơn cùng lúc. Mỗi đơn có hệ số nhân khác nhau. Thêm đơn #1002 có 1 item, trả 1 lần 50, thì tổng sau join là 900 + 50 = 950, chia cho 4 item ra 237,5 thay vì 350. Muốn đúng phải chia trong từng đơn (`group by order_id`) rồi mới cộng lại, tức là group by hai tầng.
+  - Join thêm một bảng một-nhiều thứ ba. Nếu đơn #1001 giao làm 2 lần thì có 3 × 2 × 2 = 12 dòng, tổng thành 1800, chia cho 3 ra 600. Phải chia thêm cho số lần giao, và mỗi lần thêm bảng lại phải sửa công thức.
+  - Đơn không có item. Với `left join`, `count(distinct i.order_item_id)` bằng 0, phép chia báo lỗi hoặc ra null tuỳ warehouse.
+
+  Người đọc code sau này cũng khó hiểu vì sao phải chia cho số item, vì phép chia này thực chất là để sửa lỗi nhân dòng.
 
 Riêng `count(distinct o.order_id)` thì vẫn đúng sau fan-out, vì nó đếm khoá chứ không cộng giá trị.
 
