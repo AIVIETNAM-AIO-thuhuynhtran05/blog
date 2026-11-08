@@ -888,6 +888,78 @@ Hai câu hỏi đặt ra ở phần mở đầu được giải quyết như sau
 
 ### Bài học rút ra
 
+<figure class="mindmap">
+<div class="mindmap-scroll">
+<svg viewBox="0 0 860 420" role="img" aria-label="Sơ đồ tư duy năm bài học: 1. Grain trước, join sau; 2. Một định nghĩa doanh thu; 3. Incremental khi thật cần; 4. Staging mỏng, marts rõ nghĩa; 5. Mỗi test một giả định" xmlns="http://www.w3.org/2000/svg">
+<path class="mm-link" d="M510 210 C542.0 210 542.0 32 574 32"/>
+<path class="mm-link" d="M510 210 C542.0 210 542.0 172 574 172"/>
+<path class="mm-link" d="M510 210 C542.0 210 542.0 312 574 312"/>
+<path class="mm-link" d="M350 210 C318.0 210 318.0 102 286 102"/>
+<path class="mm-link" d="M350 210 C318.0 210 318.0 242 286 242"/>
+<rect class="mm-center" x="350" y="176" width="160" height="68" rx="34"/>
+<text class="mm-center-text" x="430" y="205" text-anchor="middle">Bài học</text>
+<text class="mm-center-sub" x="430" y="227" text-anchor="middle">từ dbt project</text>
+<rect class="mm-box" x="574" y="16" width="270" height="32" rx="16"/>
+<circle class="mm-num-bg" cx="590" cy="32" r="11"/>
+<text class="mm-num" x="590" y="36.5" text-anchor="middle">1</text>
+<text class="mm-title" x="608" y="37">Grain trước, join sau</text>
+<line class="mm-stem" x1="590" y1="48" x2="590" y2="110"/>
+<line class="mm-stem" x1="590" y1="66" x2="600" y2="66"/>
+<text class="mm-leaf" x="606" y="70">Ghi grain vào mô tả mỗi model</text>
+<line class="mm-stem" x1="590" y1="88" x2="600" y2="88"/>
+<text class="mm-leaf" x="606" y="92">Test unique trên khoá grain</text>
+<line class="mm-stem" x1="590" y1="110" x2="600" y2="110"/>
+<text class="mm-leaf" x="606" y="114">Một join sai: doanh thu ×3,7</text>
+<rect class="mm-box" x="574" y="156" width="270" height="32" rx="16"/>
+<circle class="mm-num-bg" cx="590" cy="172" r="11"/>
+<text class="mm-num" x="590" y="176.5" text-anchor="middle">2</text>
+<text class="mm-title" x="608" y="177">Một định nghĩa doanh thu</text>
+<line class="mm-stem" x1="590" y1="188" x2="590" y2="250"/>
+<line class="mm-stem" x1="590" y1="206" x2="600" y2="206"/>
+<text class="mm-leaf" x="606" y="210">4 cách tính: từ 10,77 đến 5,49 triệu</text>
+<line class="mm-stem" x1="590" y1="228" x2="600" y2="228"/>
+<text class="mm-leaf" x="606" y="232">Định nghĩa ở một chỗ duy nhất</text>
+<line class="mm-stem" x1="590" y1="250" x2="600" y2="250"/>
+<text class="mm-leaf" x="606" y="254">Nơi khác đều ref() tới đó</text>
+<rect class="mm-box" x="574" y="296" width="270" height="32" rx="16"/>
+<circle class="mm-num-bg" cx="590" cy="312" r="11"/>
+<text class="mm-num" x="590" y="316.5" text-anchor="middle">3</text>
+<text class="mm-title" x="608" y="317">Incremental khi thật cần</text>
+<line class="mm-stem" x1="590" y1="328" x2="590" y2="390"/>
+<line class="mm-stem" x1="590" y1="346" x2="600" y2="346"/>
+<text class="mm-leaf" x="606" y="350">Bắt đầu bằng table</text>
+<line class="mm-stem" x1="590" y1="368" x2="600" y2="368"/>
+<text class="mm-leaf" x="606" y="372">Chuyển khi bảng thật sự lớn</text>
+<line class="mm-stem" x1="590" y1="390" x2="600" y2="390"/>
+<text class="mm-leaf" x="606" y="394">Cần unique_key, xử lý dữ liệu trễ</text>
+<rect class="mm-box" x="16" y="86" width="270" height="32" rx="16"/>
+<circle class="mm-num-bg" cx="32" cy="102" r="11"/>
+<text class="mm-num" x="32" y="106.5" text-anchor="middle">5</text>
+<text class="mm-title" x="50" y="107">Mỗi test một giả định</text>
+<line class="mm-stem" x1="32" y1="118" x2="32" y2="180"/>
+<line class="mm-stem" x1="32" y1="136" x2="42" y2="136"/>
+<text class="mm-leaf" x="48" y="140">Test điều mình thật sự dựa vào</text>
+<line class="mm-stem" x1="32" y1="158" x2="42" y2="158"/>
+<text class="mm-leaf" x="48" y="162">232 test, mỗi test giữ một điều</text>
+<line class="mm-stem" x1="32" y1="180" x2="42" y2="180"/>
+<text class="mm-leaf" x="48" y="184">Số lượng test không phải mục tiêu</text>
+<rect class="mm-box" x="16" y="226" width="270" height="32" rx="16"/>
+<circle class="mm-num-bg" cx="32" cy="242" r="11"/>
+<text class="mm-num" x="32" y="246.5" text-anchor="middle">4</text>
+<text class="mm-title" x="50" y="247">Staging mỏng, marts rõ nghĩa</text>
+<line class="mm-stem" x1="32" y1="258" x2="32" y2="320"/>
+<line class="mm-stem" x1="32" y1="276" x2="42" y2="276"/>
+<text class="mm-leaf" x="48" y="280">Staging: chỉ làm sạch</text>
+<line class="mm-stem" x1="32" y1="298" x2="42" y2="298"/>
+<text class="mm-leaf" x="48" y="302">Intermediate: logic nghiệp vụ</text>
+<line class="mm-stem" x1="32" y1="320" x2="42" y2="320"/>
+<text class="mm-leaf" x="48" y="324">Marts: đặt tên theo nghiệp vụ</text>
+</svg>
+</div>
+</figure>
+
+*Hình 5. Năm bài học rút ra từ project. Chi tiết từng ý ở bên dưới.*
+
 **1. Grain trước, join sau.** Mọi lỗi số liệu khó tìm nhất đều bắt đầu từ một phép join làm thay đổi grain mà không ai để ý. Trong project, một phép join sai đủ để doanh thu đội lên 3,7 lần mà không có lỗi nào. Ghi grain vào mô tả của mỗi model, và đặt test `unique` trên khoá của grain.
 
 **2. "Doanh thu" phải được định nghĩa một lần.** Gross hay net? Có tính đơn huỷ, đơn hoàn trả, phí vận chuyển, giảm giá không? Cùng một bộ dữ liệu trong project cho ra bốn con số "doanh thu" rất khác nhau:

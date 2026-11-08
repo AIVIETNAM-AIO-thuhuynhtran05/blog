@@ -1161,3 +1161,74 @@ mark.reader-hl {
   border-color: var(--accent);
   color: var(--accent);
 }
+
+/* Sơ đồ tư duy vẽ bằng SVG trong bài viết */
+.prose .mindmap {
+  margin: 1.5rem 0 0.5rem;
+}
+
+.mindmap-scroll {
+  overflow-x: auto;
+}
+
+.mindmap svg {
+  display: block;
+  width: 100%;
+  min-width: 640px;
+  height: auto;
+  font-family: var(--font-sans);
+}
+
+.mindmap .mm-link {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  opacity: 0.55;
+}
+
+.mindmap .mm-center {
+  fill: var(--accent);
+}
+
+.mindmap .mm-center-text {
+  fill: var(--bg);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.mindmap .mm-center-sub {
+  fill: var(--bg);
+  font-size: 13px;
+}
+
+.mindmap .mm-box {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+  stroke-width: 1.2;
+}
+
+.mindmap .mm-num-bg {
+  fill: var(--gold);
+}
+
+.mindmap .mm-num {
+  fill: var(--bg);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.mindmap .mm-title {
+  fill: var(--ink);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.mindmap .mm-stem {
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+
+.mindmap .mm-leaf {
+  fill: var(--muted);
+  font-size: 13px;
+}
