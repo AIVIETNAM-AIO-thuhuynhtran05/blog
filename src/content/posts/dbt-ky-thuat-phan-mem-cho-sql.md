@@ -973,8 +973,8 @@ Hai câu hỏi đặt ra ở phần mở đầu được giải quyết như sau
 
 Định nghĩa phải nằm ở **một** chỗ duy nhất, có tài liệu và test, và mọi nơi khác đều `ref()` tới nó. Trong project, chỗ đó là seed `order_status_mapping` cộng với model `int_orders__enriched`.
 
-**3. Incremental là tối ưu, không phải mặc định.** Bắt đầu bằng `table`. Chỉ chuyển sang incremental khi bảng thực sự lớn, và khi đó phải có chiến lược cho dữ liệu đến trễ và có `unique_key`.
+**3. Incremental khi thật cần.** Bắt đầu bằng `table`. Chỉ chuyển sang incremental khi bảng thực sự lớn, và khi đó phải có chiến lược cho dữ liệu đến trễ và có `unique_key`.
 
 **4. Staging mỏng, marts rõ nghĩa.** Staging chỉ làm sạch, không chứa logic nghiệp vụ. Logic nằm ở intermediate. Marts được đặt tên bằng ngôn ngữ của người dùng nghiệp vụ.
 
-**5. Test là hợp đồng, không phải thủ tục.** Mỗi test nên tương ứng với một giả định mà bạn thực sự dựa vào. 232 test pass có ý nghĩa vì mỗi test bảo vệ một điều cụ thể, không phải vì con số lớn.
+**5. Mỗi test một giả định.** Mỗi test nên tương ứng với một giả định mà bạn thực sự dựa vào. 232 test pass có ý nghĩa vì mỗi test bảo vệ một điều cụ thể, không phải vì con số lớn.
