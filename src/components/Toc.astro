@@ -1,0 +1,101 @@
+---
+// Mục lục của bài viết: heading cấp 2, kèm heading cấp 3 lồng bên dưới.
+// Màn hình hẹp: ô thu gọn ở đầu bài. Màn hình rộng: luôn mở, cố định ở lề phải
+// và tô đậm mục đang đọc.
+import type { MarkdownHeading } from 'astro';
+
+const { headings } = Astro.props as { headings: MarkdownHeading[] };
+
+type Item = { slug: string; text: string; children: { slug: string; text: string }[] };
+const items: Item[] = [];
+for (const h of headings) {
+  if (h.depth === 2) {
+    items.push({ slug: h.slug, text: h.text, children: [] });
+  } else if (h.depth === 3) {
+    const parent = items.at(-1);
+    if (parent) parent.children.push({ slug: h.slug, text: h.text });
+    else items.push({ slug: h.slug, text: h.text, children: [] });
+  }
+}
+const total = items.reduce((n, i) => n + 1 + i.children.length, 0);
+---
+{total >= 3 && (
+  <details class="toc" data-toc>
+    <summary>Mục lục</summary>
+    <nav aria-label="Mục lục">
+      <ol>
+        {items.map((i) => (
+          <li>
+            <a href={`#${i.slug}`}>{i.text}</a>
+            {i.children.length > 0 && (
+              <ol>{i.children.map((c) => <li><a href={`#${c.slug}`}>{c.text}</a></li>)}</ol>
+            )}
+          </li>
+        ))}
+      </ol>
+    </nav>
+  </details>
+)}
+
+<script>
+  const toc = document.querySelector<HTMLDetailsElement>('[data-toc]');
+  if (toc) {
+    const wide = window.matchMedia('(min-width: 84rem)');
+    const sync = () => {
+      if (wide.matches) toc.open = true;
+    };
+    sync();
+    wide.addEventListener('change', sync);
+
+    // Màn hình hẹp: bấm một mục thì thu gọn lại để không che nội dung
+    toc.addEventListener('click', (e) => {
+      if (!wide.matches && (e.target as HTMLElement).closest('a')) toc.open = false;
+    });
+
+    const links = new Map<string, HTMLAnchorElement>();
+    toc.querySelectorAll<HTMLAnchorElement>('nav a').forEach((a) => {
+      links.set(decodeURIComponent(a.hash.slice(1)), a);
+    });
+    const targets = [...links.keys()]
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    let current: HTMLAnchorElement | undefined;
+    const update = () => {
+      // Mục đang đọc: heading cuối cùng đã cuộn qua mép trên (cộng một khoảng đệm)
+      let active = targets[0];
+      for (const el of targets) {
+        if (el.getBoundingClientRect().top <= 80) active = el;
+        else break;
+      }
+      const link = active ? links.get(active.id) : undefined;
+      if (link === current) return;
+      current?.removeAttribute('aria-current');
+      link?.setAttribute('aria-current', 'true');
+      current = link;
+      // Giữ mục đang đọc trong khung khi mục lục dài hơn chiều cao màn hình.
+      // Chỉ cuộn khung mục lục, không dùng scrollIntoView vì nó cuộn cả trang.
+      if (link && wide.matches) {
+        const box = toc.getBoundingClientRect();
+        const r = link.getBoundingClientRect();
+        if (r.top < box.top) toc.scrollTop -= box.top - r.top + 16;
+        else if (r.bottom > box.bottom) toc.scrollTop += r.bottom - box.bottom + 16;
+      }
+    };
+
+    let ticking = false;
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          update();
+          ticking = false;
+        });
+      },
+      { passive: true },
+    );
+    update();
+  }
+</script>

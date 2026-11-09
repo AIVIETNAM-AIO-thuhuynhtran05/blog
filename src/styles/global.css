@@ -662,6 +662,74 @@ main > section.roadmap {
   padding-left: 1.25rem;
 }
 
+.toc ol ol {
+  margin: 0.2rem 0 0.4rem;
+  padding-left: 1rem;
+  list-style: none;
+  font-size: 0.95em;
+}
+
+.toc li {
+  margin-block: 0.2rem;
+}
+
+.toc a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.toc a:hover,
+.toc a[aria-current] {
+  color: var(--accent);
+}
+
+.toc a[aria-current] {
+  font-weight: 600;
+}
+
+.prose :is(h2, h3) {
+  scroll-margin-top: 1.5rem;
+}
+
+/* Màn hình rộng: mục lục luôn mở, cố định ở lề phải cột nội dung (50rem) */
+@media (min-width: 84rem) {
+  .toc {
+    position: fixed;
+    top: 10.5rem;
+    left: calc(50% + 25rem + 1.5rem);
+    width: calc(50% - 25rem - 3rem);
+    max-width: 18rem;
+    max-height: calc(100vh - 12rem);
+    overflow-y: auto;
+    margin: 0;
+    padding: 0 0 0 0.9rem;
+    background: none;
+    border-left: 1px solid var(--line);
+    border-radius: 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+
+  .toc summary {
+    list-style: none;
+    pointer-events: none;
+    margin-bottom: 0.4rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .toc summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .toc > nav > ol {
+    padding-left: 0;
+    list-style: none;
+  }
+}
+
 .back {
   display: inline-block;
   margin-top: 2rem;
