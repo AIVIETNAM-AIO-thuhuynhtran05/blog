@@ -870,95 +870,101 @@ packages:
 
 ## Kết luận: nhìn lại bản đồ
 
-Bảng 2 tổng hợp cách dbt hiện thực từng thực hành đã nêu ở Bảng 1.
-
-*Bảng 2. Các thực hành kỹ thuật phần mềm và cách hiện thực trong dbt.*
-
-| Software engineering | Trong dbt |
-|---|---|
-| Version control | Mỗi model là một file `.sql`, quản lý bằng Git, review qua Pull Request |
-| Modular code | Mỗi model một trách nhiệm, nối với nhau bằng `ref()`; dbt tự dựng DAG |
-| Kiến trúc phân tầng | staging → intermediate → marts; star schema ở marts |
-| Test | Data tests (generic + singular), unit tests, model contracts |
-| Documentation | `description` trong YAML + `dbt docs` với lineage tự sinh |
-| CI/CD | `dbt build` trong pipeline, Slim CI với `state:modified+` |
-| DRY, thư viện | Jinja macros; packages như `dbt_utils`, `dbt_expectations` |
-
-Hai câu hỏi đặt ra ở phần mở đầu được giải quyết như sau: **nguồn gốc** của chỉ số doanh thu được xác định qua lineage, còn **tính đúng đắn** của nó được kiểm chứng bằng test, contract và CI.
-
-### Bài học rút ra
+Hình 5 tóm tắt toàn bộ bài viết trong một sơ đồ: năm phần nội dung và các bài học rút ra từ project.
 
 <figure class="mindmap">
 <div class="mindmap-scroll">
-<svg viewBox="0 0 860 420" role="img" aria-label="Sơ đồ tư duy năm bài học: 1. Grain trước, join sau; 2. Một định nghĩa doanh thu; 3. Incremental khi thật cần; 4. Staging mỏng, marts rõ nghĩa; 5. Mỗi test một giả định" xmlns="http://www.w3.org/2000/svg">
-<path class="mm-link" d="M510 210 C542.0 210 542.0 32 574 32"/>
-<path class="mm-link" d="M510 210 C542.0 210 542.0 172 574 172"/>
-<path class="mm-link" d="M510 210 C542.0 210 542.0 312 574 312"/>
-<path class="mm-link" d="M350 210 C318.0 210 318.0 102 286 102"/>
-<path class="mm-link" d="M350 210 C318.0 210 318.0 242 286 242"/>
-<rect class="mm-center" x="350" y="176" width="160" height="68" rx="34"/>
-<text class="mm-center-text" x="430" y="205" text-anchor="middle">Bài học</text>
-<text class="mm-center-sub" x="430" y="227" text-anchor="middle">từ dbt project</text>
-<rect class="mm-box" x="574" y="16" width="270" height="32" rx="16"/>
-<circle class="mm-num-bg" cx="590" cy="32" r="11"/>
-<text class="mm-num" x="590" y="36.5" text-anchor="middle">1</text>
-<text class="mm-title" x="608" y="37">Grain trước, join sau</text>
-<line class="mm-stem" x1="590" y1="48" x2="590" y2="110"/>
-<line class="mm-stem" x1="590" y1="66" x2="600" y2="66"/>
-<text class="mm-leaf" x="606" y="70">Ghi grain vào mô tả mỗi model</text>
-<line class="mm-stem" x1="590" y1="88" x2="600" y2="88"/>
-<text class="mm-leaf" x="606" y="92">Test unique trên khoá grain</text>
-<line class="mm-stem" x1="590" y1="110" x2="600" y2="110"/>
-<text class="mm-leaf" x="606" y="114">Một join sai: doanh thu ×3,7</text>
-<rect class="mm-box" x="574" y="156" width="270" height="32" rx="16"/>
-<circle class="mm-num-bg" cx="590" cy="172" r="11"/>
-<text class="mm-num" x="590" y="176.5" text-anchor="middle">2</text>
-<text class="mm-title" x="608" y="177">Một định nghĩa doanh thu</text>
-<line class="mm-stem" x1="590" y1="188" x2="590" y2="250"/>
-<line class="mm-stem" x1="590" y1="206" x2="600" y2="206"/>
-<text class="mm-leaf" x="606" y="210">4 cách tính: từ 10,77 đến 5,49 triệu</text>
-<line class="mm-stem" x1="590" y1="228" x2="600" y2="228"/>
-<text class="mm-leaf" x="606" y="232">Định nghĩa ở một chỗ duy nhất</text>
-<line class="mm-stem" x1="590" y1="250" x2="600" y2="250"/>
-<text class="mm-leaf" x="606" y="254">Nơi khác đều ref() tới đó</text>
-<rect class="mm-box" x="574" y="296" width="270" height="32" rx="16"/>
-<circle class="mm-num-bg" cx="590" cy="312" r="11"/>
-<text class="mm-num" x="590" y="316.5" text-anchor="middle">3</text>
-<text class="mm-title" x="608" y="317">Incremental khi thật cần</text>
-<line class="mm-stem" x1="590" y1="328" x2="590" y2="390"/>
-<line class="mm-stem" x1="590" y1="346" x2="600" y2="346"/>
-<text class="mm-leaf" x="606" y="350">Bắt đầu bằng table</text>
-<line class="mm-stem" x1="590" y1="368" x2="600" y2="368"/>
-<text class="mm-leaf" x="606" y="372">Chuyển khi bảng thật sự lớn</text>
-<line class="mm-stem" x1="590" y1="390" x2="600" y2="390"/>
-<text class="mm-leaf" x="606" y="394">Cần unique_key, xử lý dữ liệu trễ</text>
-<rect class="mm-box" x="16" y="86" width="270" height="32" rx="16"/>
-<circle class="mm-num-bg" cx="32" cy="102" r="11"/>
-<text class="mm-num" x="32" y="106.5" text-anchor="middle">5</text>
-<text class="mm-title" x="50" y="107">Mỗi test một giả định</text>
-<line class="mm-stem" x1="32" y1="118" x2="32" y2="180"/>
-<line class="mm-stem" x1="32" y1="136" x2="42" y2="136"/>
-<text class="mm-leaf" x="48" y="140">Test điều mình thật sự dựa vào</text>
-<line class="mm-stem" x1="32" y1="158" x2="42" y2="158"/>
-<text class="mm-leaf" x="48" y="162">232 test, mỗi test giữ một điều</text>
-<line class="mm-stem" x1="32" y1="180" x2="42" y2="180"/>
-<text class="mm-leaf" x="48" y="184">Số lượng test không phải mục tiêu</text>
-<rect class="mm-box" x="16" y="226" width="270" height="32" rx="16"/>
-<circle class="mm-num-bg" cx="32" cy="242" r="11"/>
-<text class="mm-num" x="32" y="246.5" text-anchor="middle">4</text>
-<text class="mm-title" x="50" y="247">Staging mỏng, marts rõ nghĩa</text>
-<line class="mm-stem" x1="32" y1="258" x2="32" y2="320"/>
-<line class="mm-stem" x1="32" y1="276" x2="42" y2="276"/>
-<text class="mm-leaf" x="48" y="280">Staging: chỉ làm sạch</text>
-<line class="mm-stem" x1="32" y1="298" x2="42" y2="298"/>
-<text class="mm-leaf" x="48" y="302">Intermediate: logic nghiệp vụ</text>
-<line class="mm-stem" x1="32" y1="320" x2="42" y2="320"/>
-<text class="mm-leaf" x="48" y="324">Marts: đặt tên theo nghiệp vụ</text>
+<svg viewBox="0 0 860 476" role="img" aria-label="Sơ đồ tư duy toàn bài. I. Vì sao có dbt: ETL → ELT: biến đổi trong warehouse, dbt chỉ lo chữ T, bằng SQL, Analytics Engineer: vai trò mới; II. dbt hoạt động thế nào: Model là một câu SELECT, source(), ref() → dbt tự dựng DAG, view, table, incremental, ephemeral; III. Thiết kế dữ liệu: staging → intermediate → marts, Star schema ở marts (Kimball), Grain và lỗi fan-out; IV. Dữ liệu đáng tin cậy: Data tests, unit tests, Model contracts, Docs và lineage tự sinh, CI/CD với Slim CI; V. Tính năng nâng cao: Jinja và macros, Snapshots: SCD Type 2, Seeds, packages, exposures; Bài học rút ra: Grain trước, join sau, Một định nghĩa doanh thu, Incremental khi thật cần, Staging mỏng, marts rõ nghĩa, Mỗi test một giả định" xmlns="http://www.w3.org/2000/svg">
+<path class="mm-link" d="M510 238 C542 238 542 65 574 65"/>
+<path class="mm-link" d="M510 238 C542 238 542 201 574 201"/>
+<path class="mm-link" d="M510 238 C542 238 542 337 574 337"/>
+<path class="mm-link" d="M350 238 C318 238 318 32 286 32"/>
+<path class="mm-link" d="M350 238 C318 238 318 212 286 212"/>
+<path class="mm-link" d="M350 238 C318 238 318 348 286 348"/>
+<rect class="mm-center" x="350" y="204" width="160" height="68" rx="34"/>
+<text class="mm-center-text" x="430" y="233" text-anchor="middle">dbt</text>
+<text class="mm-center-sub" x="430" y="255" text-anchor="middle">nhìn lại cả bài</text>
+<rect class="mm-box" x="574" y="49" width="270" height="32" rx="16"/>
+<circle class="mm-num-bg" cx="590" cy="65" r="11"/>
+<text class="mm-num" x="590" y="69.5" text-anchor="middle">I</text>
+<text class="mm-title" x="608" y="70">Vì sao có dbt</text>
+<line class="mm-stem" x1="590" y1="81" x2="590" y2="143"/>
+<line class="mm-stem" x1="590" y1="99" x2="600" y2="99"/>
+<text class="mm-leaf" x="606" y="103">ETL → ELT: biến đổi trong warehouse</text>
+<line class="mm-stem" x1="590" y1="121" x2="600" y2="121"/>
+<text class="mm-leaf" x="606" y="125">dbt chỉ lo chữ T, bằng SQL</text>
+<line class="mm-stem" x1="590" y1="143" x2="600" y2="143"/>
+<text class="mm-leaf" x="606" y="147">Analytics Engineer: vai trò mới</text>
+<rect class="mm-box" x="574" y="185" width="270" height="32" rx="16"/>
+<circle class="mm-num-bg" cx="590" cy="201" r="11"/>
+<text class="mm-num" x="590" y="205.5" text-anchor="middle">II</text>
+<text class="mm-title" x="608" y="206">dbt hoạt động thế nào</text>
+<line class="mm-stem" x1="590" y1="217" x2="590" y2="279"/>
+<line class="mm-stem" x1="590" y1="235" x2="600" y2="235"/>
+<text class="mm-leaf" x="606" y="239">Model là một câu SELECT</text>
+<line class="mm-stem" x1="590" y1="257" x2="600" y2="257"/>
+<text class="mm-leaf" x="606" y="261">source(), ref() → dbt tự dựng DAG</text>
+<line class="mm-stem" x1="590" y1="279" x2="600" y2="279"/>
+<text class="mm-leaf" x="606" y="283">view, table, incremental, ephemeral</text>
+<rect class="mm-box" x="574" y="321" width="270" height="32" rx="16"/>
+<circle class="mm-num-bg" cx="590" cy="337" r="11"/>
+<text class="mm-num" x="590" y="341.5" text-anchor="middle" style="font-size:11px">III</text>
+<text class="mm-title" x="608" y="342">Thiết kế dữ liệu</text>
+<line class="mm-stem" x1="590" y1="353" x2="590" y2="415"/>
+<line class="mm-stem" x1="590" y1="371" x2="600" y2="371"/>
+<text class="mm-leaf" x="606" y="375">staging → intermediate → marts</text>
+<line class="mm-stem" x1="590" y1="393" x2="600" y2="393"/>
+<text class="mm-leaf" x="606" y="397">Star schema ở marts (Kimball)</text>
+<line class="mm-stem" x1="590" y1="415" x2="600" y2="415"/>
+<text class="mm-leaf" x="606" y="419">Grain và lỗi fan-out</text>
+<rect class="mm-box" x="16" y="16" width="270" height="32" rx="16"/>
+<circle class="mm-num-bg" cx="32" cy="32" r="11"/>
+<text class="mm-num" x="32" y="36.5" text-anchor="middle">✓</text>
+<text class="mm-title" x="50" y="37">Bài học rút ra</text>
+<line class="mm-stem" x1="32" y1="48" x2="32" y2="154"/>
+<line class="mm-stem" x1="32" y1="66" x2="42" y2="66"/>
+<text class="mm-leaf" x="48" y="70">Grain trước, join sau</text>
+<line class="mm-stem" x1="32" y1="88" x2="42" y2="88"/>
+<text class="mm-leaf" x="48" y="92">Một định nghĩa doanh thu</text>
+<line class="mm-stem" x1="32" y1="110" x2="42" y2="110"/>
+<text class="mm-leaf" x="48" y="114">Incremental khi thật cần</text>
+<line class="mm-stem" x1="32" y1="132" x2="42" y2="132"/>
+<text class="mm-leaf" x="48" y="136">Staging mỏng, marts rõ nghĩa</text>
+<line class="mm-stem" x1="32" y1="154" x2="42" y2="154"/>
+<text class="mm-leaf" x="48" y="158">Mỗi test một giả định</text>
+<rect class="mm-box" x="16" y="196" width="270" height="32" rx="16"/>
+<circle class="mm-num-bg" cx="32" cy="212" r="11"/>
+<text class="mm-num" x="32" y="216.5" text-anchor="middle">V</text>
+<text class="mm-title" x="50" y="217">Tính năng nâng cao</text>
+<line class="mm-stem" x1="32" y1="228" x2="32" y2="290"/>
+<line class="mm-stem" x1="32" y1="246" x2="42" y2="246"/>
+<text class="mm-leaf" x="48" y="250">Jinja và macros</text>
+<line class="mm-stem" x1="32" y1="268" x2="42" y2="268"/>
+<text class="mm-leaf" x="48" y="272">Snapshots: SCD Type 2</text>
+<line class="mm-stem" x1="32" y1="290" x2="42" y2="290"/>
+<text class="mm-leaf" x="48" y="294">Seeds, packages, exposures</text>
+<rect class="mm-box" x="16" y="332" width="270" height="32" rx="16"/>
+<circle class="mm-num-bg" cx="32" cy="348" r="11"/>
+<text class="mm-num" x="32" y="352.5" text-anchor="middle">IV</text>
+<text class="mm-title" x="50" y="353">Dữ liệu đáng tin cậy</text>
+<line class="mm-stem" x1="32" y1="364" x2="32" y2="448"/>
+<line class="mm-stem" x1="32" y1="382" x2="42" y2="382"/>
+<text class="mm-leaf" x="48" y="386">Data tests, unit tests</text>
+<line class="mm-stem" x1="32" y1="404" x2="42" y2="404"/>
+<text class="mm-leaf" x="48" y="408">Model contracts</text>
+<line class="mm-stem" x1="32" y1="426" x2="42" y2="426"/>
+<text class="mm-leaf" x="48" y="430">Docs và lineage tự sinh</text>
+<line class="mm-stem" x1="32" y1="448" x2="42" y2="448"/>
+<text class="mm-leaf" x="48" y="452">CI/CD với Slim CI</text>
 </svg>
 </div>
 </figure>
 
-*Hình 5. Năm bài học rút ra từ project. Chi tiết từng ý ở bên dưới.*
+*Hình 5. Sơ đồ tư duy toàn bài. Các nhánh I đến V tương ứng với năm phần của bài. Nhánh còn lại là các bài học, được giải thích chi tiết ở bên dưới.*
+
+Hai câu hỏi đặt ra ở phần mở đầu được giải quyết như sau: **nguồn gốc** của chỉ số doanh thu được xác định qua lineage, còn **tính đúng đắn** của nó được kiểm chứng bằng test, contract và CI.
+
+### Bài học rút ra
 
 **1. Grain trước, join sau.** Mọi lỗi số liệu khó tìm nhất đều bắt đầu từ một phép join làm thay đổi grain mà không ai để ý. Trong project, một phép join sai đủ để doanh thu đội lên 3,7 lần mà không có lỗi nào. Ghi grain vào mô tả của mỗi model, và đặt test `unique` trên khoá của grain.
 
