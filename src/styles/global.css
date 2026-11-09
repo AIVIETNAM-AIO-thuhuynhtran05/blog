@@ -623,6 +623,7 @@ main > section.roadmap {
   margin: 0 0 0.6rem;
   font-size: clamp(1.75rem, 5vw, 2.4rem);
   font-weight: 600;
+  text-wrap: wrap;
 }
 
 .article-meta {
