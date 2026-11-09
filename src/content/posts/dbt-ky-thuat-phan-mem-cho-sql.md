@@ -1,5 +1,5 @@
 ---
-title: 'dbt: Đưa kỹ thuật phần mềm vào SQL'
+title: 'dbt: Quản lý SQL như một dự án phần mềm'
 description: 'Từ ELT, ref() và DAG đến mô hình hoá dữ liệu, kiểm thử và các tính năng nâng cao. Minh hoạ bằng một project e-commerce chạy trên DuckDB.'
 date: 2026-11-06
 track: data-transformation
