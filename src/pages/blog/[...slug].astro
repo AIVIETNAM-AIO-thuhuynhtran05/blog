@@ -17,6 +17,9 @@ const { Content, headings } = await render(post);
   <Fragment slot="meta">
     <a class="entry-track" href={`/${post.data.track}`}>{getTrack(post.data.track).title}</a>
     <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+    {post.data.updated && (
+      <span>Cập nhật <time datetime={post.data.updated.toISOString()}>{formatDate(post.data.updated)}</time></span>
+    )}
     <span>{readingTime(post.body)} phút đọc</span>
     {post.data.tags.map((t) => <a href={`/tags/${t}`}>#{t}</a>)}
   </Fragment>
