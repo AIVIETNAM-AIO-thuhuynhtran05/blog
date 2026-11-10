@@ -9,6 +9,8 @@ tags: [dbt, elt, data-modeling, data-testing, duckdb]
 
 > **Vấn đề đặt ra.** Với một chỉ số trên dashboard, chẳng hạn doanh thu, bài viết xem xét hai câu hỏi: chỉ số đó được tính từ những nguồn dữ liệu nào, và làm thế nào để kiểm chứng tính đúng đắn của nó.
 
+**Bản PDF.** Bài viết có bản tài liệu đầy đủ do Lê Thanh Bảo Trân và Huỳnh Trần Anh Thư biên soạn cho AI VIET NAM: [Transformation with dbt (PDF, 35 trang)](/files/transformation-with-dbt.pdf).
+
 ## Mở đầu: một con số, hai đáp án
 
 Thứ Hai đầu tháng, trưởng nhóm kinh doanh mở hai dashboard và thấy hai con số doanh thu tháng trước khác nhau gần 15%. Một bên tính cả đơn bị huỷ, bên kia thì không. Một bên join bảng thanh toán vào từng dòng sản phẩm nên doanh thu bị nhân lên. Cả hai câu SQL đều nằm đâu đó trong một thư mục chung, không có test, không ai biết bảng nào phụ thuộc bảng nào, và người viết đã nghỉ việc.
