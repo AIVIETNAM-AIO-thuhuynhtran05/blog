@@ -3,7 +3,7 @@ title: 'Khách 200 ngày chưa mua có đáng lo không? RFM mỗi ngành địn
 description: 'Các lựa chọn khi định nghĩa RFM, cách các ngành bán lẻ, thời trang, điện tử, thuê bao, ngân hàng và vay tiêu dùng điều chỉnh R, F, M, và cách kiểm tra một định nghĩa RFM bằng backtest.'
 date: 2026-11-11
 track: business
-section: 'Marketing'
+section: 'Phân tích khách hàng'
 tags: [rfm, customer-analytics, segmentation]
 ---
 

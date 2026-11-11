@@ -297,7 +297,12 @@ export const roadmaps: Record<string, { group: string; description: string; topi
     {
       group: 'Marketing',
       description: 'Đo chiến dịch nào mang về khách thật, và tốn bao nhiêu tiền để có một khách.',
-      topics: 'CAC, ROAS, attribution, cohort, retention, churn, RFM',
+      topics: 'CAC, ROAS, attribution',
+    },
+    {
+      group: 'Phân tích khách hàng',
+      description: 'Biết khách nào đáng giữ, khách nào sắp rời đi, và mỗi khách mang lại bao nhiêu, ở bất kỳ ngành nào.',
+      topics: 'RFM, CLV, cohort, retention, churn, khách mới và khách quay lại',
     },
     {
       group: 'Logistics và chuỗi cung ứng',
