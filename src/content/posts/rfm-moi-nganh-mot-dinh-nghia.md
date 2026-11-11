@@ -23,7 +23,7 @@ RFM chia khách hàng theo ba chỉ số:
 
 Mỗi chỉ số được chấm điểm từ 1 đến 5, rồi tổ hợp điểm được gắn tên nhóm. Ví dụ, R cao và F cao là Champions (khách tốt nhất), R thấp nhưng F cao là At risk (từng mua nhiều nhưng lâu rồi không quay lại).
 
-## Những chỗ phải tự quyết định
+## Những chỗ cần được định nghĩa
 
 | Lựa chọn | Các cách thường gặp | Phụ thuộc vào |
 |---|---|---|
