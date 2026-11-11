@@ -30,7 +30,7 @@ Các kiểm tra cơ bản đều qua: không có giá trị null, không trùng 
 
 - **Inner join làm mất thu nhập.** 20.031 dòng thu nhập thuộc hợp đồng đóng trong tháng nên không có số dư cuối tháng. Nối trong giữa hai bảng sẽ âm thầm bỏ các dòng này.
 - **Số giải ngân không phải vốn mới.** 91,5% hợp đồng đã đóng là tái tục, nên số hợp đồng và doanh số giải ngân bị thổi lên nhiều so với dòng vốn thực.
-- **Không nên chuẩn hóa NII theo số ngày.** Lãi trong dữ liệu được tính theo 1/12 năm ở mọi tháng, kể cả tháng 2. Chia theo số ngày sẽ tạo ra một đỉnh NIM giả vào tháng 2.
+- **Không nên chuẩn hóa NII theo số ngày.** Lãi trong dữ liệu được tính theo 1/12 năm ở mọi tháng, kể cả tháng 2. Chia theo số ngày sẽ tạo ra một đỉnh NIM giả vào tháng 2: với khoản vay lãi 12%/năm, tháng 1 quy ra 11,77% còn tháng 2 thành 13,04%, dù lãi suất không đổi.
 - **Thuộc tính khách hàng là giá trị hiện tại.** Phân khúc và xếp hạng không có lịch sử, nên mọi so sánh theo thời gian đang ngầm giả định các giá trị này không đổi.
 
 ## Quy mô tăng, thu nhập lãi không tăng theo
@@ -47,6 +47,16 @@ Khi một tỷ lệ bình quân giảm, có hai khả năng rất khác nhau:
 
 1. **Hiệu ứng cơ cấu:** danh mục dịch chuyển sang các nhóm vốn có biên thấp, còn biên từng nhóm không đổi.
 2. **Hiệu ứng biên:** chính biên trong từng nhóm thu hẹp lại.
+
+Ví dụ ngân hàng chỉ có hai nhóm: ngắn hạn NIM 1,5% và trung dài hạn NIM 2,5%, mỗi nhóm chiếm 50% dư nợ, nên NIM chung là 2,0%.
+
+| | Ngắn hạn | Trung dài hạn | NIM chung |
+|---|---|---|---|
+| Kỳ gốc | 50% dư nợ, NIM 1,5% | 50% dư nợ, NIM 2,5% | 2,0% |
+| Cơ cấu đổi | **70%** dư nợ, NIM 1,5% | **30%** dư nợ, NIM 2,5% | 1,8% |
+| Biên đổi | 50% dư nợ, NIM **1,1%** | 50% dư nợ, NIM 2,5% | 1,8% |
+
+Cả hai trường hợp đều làm NIM chung giảm 0,2 điểm %. Cơ cấu đổi là chuyện chọn bán gì: danh mục nghiêng về nhóm vốn có biên thấp, có thể là chủ động vì nhóm đó ít rủi ro hơn. Biên đổi là chuyện định giá: cùng loại khoản vay nhưng thu lãi ít hơn, do ưu đãi hoặc cạnh tranh.
 
 Hai nguyên nhân dẫn tới hai hành động khác nhau, nên cần tách chúng ra. Gọi $w_i$ là tỷ trọng dư nợ của nhóm $i$, $n_i$ là NIM của nhóm đó, và $N_0$ là NIM toàn danh mục kỳ gốc:
 
@@ -85,6 +95,8 @@ Cắt theo chương trình cho thấy rõ nơi biên bị mất:
 - Nhóm không ưu đãi đóng góp thêm −0,09 điểm %. Mức giảm nằm ở ngắn hạn VND (2,06% xuống 1,83%), còn trung dài hạn VND vẫn giữ biên (2,52% lên 2,55%).
 - Hai phần trên cộng lại là −0,19, nên các chương trình còn lại bù ngược khoảng +0,02 để ra tổng −0,17.
 
+Nghĩa là riêng hai chương trình ưu đãi, với khoảng 11,5% dư nợ, đã chiếm hơn một nửa mức giảm NIM. Phần này không đến từ thị trường mà từ chính quyết định giảm lãi của ngân hàng: cả hai chương trình đều giảm 2 điểm % lãi suất. Và ưu đãi chủ yếu rơi vào khách cũ. 84,6% hợp đồng CT0701 và 95,3% hợp đồng CT0801 là tái tục, tức khách đang vay sẵn, hết hợp đồng cũ thì ký hợp đồng mới có ưu đãi. Ưu đãi gần như không kéo thêm khách mới, phần lớn là giảm lãi cho người vốn đã vay của ngân hàng.
+
 Có một giả thuyết khác cần loại trừ: nợ xấu không dự thu lãi kéo NIM xuống. Khoảng cách giữa NIM phần nợ nhóm 1-2 và NIM toàn danh mục giữ nguyên 0,23 điểm % ở cả hai kỳ, nên nợ xấu không phải động lực của mức giảm.
 
 ## Một khoản vay có thể đổi cả câu chuyện
@@ -107,6 +119,20 @@ Tách được nhiễu rồi mới thấy tín hiệu đáng lo hơn, và tín h
 
 Cùng một danh mục, cùng một thời điểm, có ba con số nợ xấu: 2,63%, 2,24% và 3,80%. Không con số nào sai, chúng trả lời ba câu hỏi khác nhau. Báo cáo nên ghi rõ đang dùng cách nào.
 
+## Hợp đồng tăng, khách lại giảm
+
+Từ 12/2023 đến 06/2026, số hợp đồng còn dư nợ tăng từ 10.481 lên 11.073, nhưng số khách giảm từ 9.180 xuống 8.778. Chỉ đếm hợp đồng thì dễ tưởng ngân hàng đang có thêm khách.
+
+Phần giảm nằm gần như toàn bộ ở nhóm MICRO (−298 khách) và SMALL (−103 khách), chủ yếu là khách vay trung dài hạn. Trong 1.210 khách rời đi, 86% có khoản vay cuối là trung dài hạn: 995 khách trả hết rồi không vay lại, 215 khách bị xóa nợ. Ngược lại, số khách vay bổ sung vốn lưu động vẫn tăng thêm 262.
+
+Với 215 khách bị xóa nợ, đếm số ca thì TP HCM (57) và Hà Nội (50) đứng đầu. Nhưng đây là hai nơi đông khách nhất, tính theo tỷ lệ thì cả hai đều đúng bằng mức trung bình 2,3%. Giữa các ngành và các tỉnh, tỷ lệ chênh nhau không có ý nghĩa thống kê (kiểm định chi-square, p khoảng 0,7). Thứ tách bạch rõ là xếp hạng tín dụng:
+
+| Xếp hạng | CCC | B | BB | BBB | A |
+|---|---|---|---|---|---|
+| Tỷ lệ xóa nợ | 6,5% | 4,6% | 1,6% | 1,0% | 0,3% |
+
+Khách hạng CCC và B chỉ chiếm 30% số khách nhưng chiếm 64% số ca. Có điều, như bẫy thứ tư ở phần kiểm tra dữ liệu, xếp hạng là giá trị hiện tại, nên khách có thể đã bị hạ hạng *sau khi* xấu đi. Bảng này cho thấy xếp hạng phản ánh đúng rủi ro hiện tại, chưa chứng minh được xếp hạng lúc cho vay đã dự báo trước việc xóa nợ.
+
 ## Đừng mô tả dữ liệu lệch bằng trung bình
 
 ![Phân bố dư nợ mỗi khách hàng trên thang log có dạng gần hình chuông, P50 là 2,8 tỷ và P99 là 142 tỷ. Bên phải là khoảng phân vị dư nợ theo phân khúc, chồng lấn mạnh.](/images/aiv-bank/phan-bo-du-no-kh.png)
@@ -119,7 +145,7 @@ Dư nợ trung bình mỗi khách hàng là 11,2 tỷ, nhưng trung vị chỉ 2
 
 Phần này quan trọng không kém phần kết quả:
 
-- **Ưu đãi có đáng không?** 84,6% hợp đồng CT0701 và 95,3% hợp đồng CT0801 là tái tục. Nhưng dữ liệu không cho biết nếu không có ưu đãi thì khách có ở lại hay không, nên chưa thể kết luận đây là mất thu nhập ròng.
+- **Ưu đãi có đáng không?** Ưu đãi chủ yếu rơi vào khách tái tục, nhưng dữ liệu không cho biết nếu không có ưu đãi thì khách có ở lại hay không, nên chưa thể kết luận đây là mất thu nhập ròng.
 - **Vì sao spread giải ngân mới giảm?** Spread ngắn hạn VND giảm từ 1,92 xuống khoảng 1,70 điểm %. Đây có thể là áp lực giá hoặc dịch chuyển sang ưu đãi sâu hơn, dữ liệu chưa đủ để tách hai nguyên nhân này.
 - **Dữ liệu giả lập có quy luật riêng.** Một số điểm lạ, như chi nhánh tỉnh NAN02 đứng thứ 3 toàn hệ thống, có thể là quy luật được cài vào khi sinh dữ liệu.
 
@@ -127,9 +153,10 @@ Phần này quan trọng không kém phần kết quả:
 
 Vấn đề chính của AIV Bank trong nửa đầu 2026 là **chất lượng tăng trưởng, không phải quy mô**. Dư nợ tăng hai chữ số, nhưng NII gần như đi ngang vì biên thu hẹp, tệp khách hàng co lại, và rủi ro nền tăng ở một số mảng dù tỷ lệ nợ xấu chung trông ổn định.
 
-Về phương pháp, có bốn thói quen đáng mang sang lần EDA sau:
+Về phương pháp, có năm thói quen đáng mang sang lần EDA sau:
 
 1. Dữ liệu sạch rồi vẫn phải hỏi: con số này đang đo cái gì?
 2. Khi một tỷ lệ bình quân thay đổi, tách cơ cấu và biên trước khi kết luận.
 3. Khi một chỉ số nhảy đột ngột, kiểm tra xem có phải một vài bản ghi đang kéo nó không.
-4. Ghi rõ những gì dữ liệu không trả lời được.
+4. So sánh các nhóm bằng tỷ lệ trên quy mô nhóm, không bằng số ca.
+5. Ghi rõ những gì dữ liệu không trả lời được.
