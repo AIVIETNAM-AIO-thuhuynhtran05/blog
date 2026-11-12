@@ -496,6 +496,10 @@ p.stair-level {
   margin-top: 1.75rem;
 }
 
+.track-intro p {
+  white-space: pre-line;
+}
+
 main > section.roadmap {
   margin-block: 1.5rem 2rem;
 }
