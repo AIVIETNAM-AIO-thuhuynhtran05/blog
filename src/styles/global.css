@@ -581,6 +581,11 @@ main > section.roadmap {
   color: var(--muted);
 }
 
+.section-intro {
+  margin: 0 0 1rem;
+  color: var(--muted);
+}
+
 .entry-track {
   font-weight: 600;
 }

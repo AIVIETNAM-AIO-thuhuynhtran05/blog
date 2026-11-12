@@ -64,13 +64,17 @@ export const extraTracks = [
 
 export const tracks = [...levelTracks, ...extraTracks];
 
-// Sách có tab riêng nên không nằm trong các mục.
+// Sách có tab riêng nên không nằm trong các mục. Bài khai báo `section` bằng một trong các phần dưới đây.
 export const bookTrack = {
   slug: 'sach-minh-doc',
   short: 'Những gì mình nghĩ sau khi đọc sách.',
   title: 'My thoughts',
   summary: 'Những gì mình nghĩ sau khi đọc sách.',
 };
+
+export const bookSections = [
+  { title: 'Tình yêu', intro: 'Mình thích viết về tình yêu ở thời hiện đại, nhưng vẫn truyền thống.' },
+];
 
 export const trackSlugs = [...tracks, bookTrack].map((t) => t.slug) as [string, ...string[]];
 
