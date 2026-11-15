@@ -36,7 +36,7 @@ Mỗi chỉ số được chấm điểm từ 1 đến 5, rồi tổ hợp đi�
 
 Trong project e-commerce, mình chọn: xét toàn bộ 2021–2025, ngày mốc là ngày đơn cuối cùng, chỉ tính đơn paid, shipped, delivered, M là tổng tiền khách trả. F dùng ngưỡng cố định 1, 2, 3–4, 5–7, 8+ đơn vì số đơn nhỏ và rời rạc. R và M chia theo phân vị vì dữ liệu giả lập không có ngưỡng nào do business đặt.
 
-Ở Vin Datathon, M là tiền khách trả trừ tiền hoàn của đơn, vì ngành thời trang trả hàng nhiều. RFM không chấm điểm 1–5 mà dùng làm đầu vào cho K-Means. Khách đăng ký nhưng chưa có đơn nào thì không tính RFM, được xếp riêng vào nhóm chưa mua.
+Ở Vin Datathon, M là tiền khách trả trừ tiền hoàn của đơn, vì ngành thời trang trả hàng nhiều. RFM không chấm điểm 1–5 mà dùng làm đầu vào cho K-Means. Khách chưa có đơn tạo doanh thu, kể cả khách đã đặt đơn nhưng không thanh toán, thì không tính RFM mà được gán nhóm bằng luật trước khi phân cụm.
 
 ## Lựa chọn quan trọng nhất: thế nào là "lâu không mua"
 
