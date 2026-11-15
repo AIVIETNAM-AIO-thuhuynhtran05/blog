@@ -7,7 +7,7 @@ section: 'Phân tích khách hàng'
 tags: [rfm, customer-analytics, segmentation]
 ---
 
-Mình dùng RFM ở cả [project kho dữ liệu e-commerce](https://github.com/AIVIETNAM-AIO-thuhuynhtran05/E-commerce-Data-Warehouse-and-Customer-Analytics) và [project vay tiêu dùng ở cuộc thi ITB](https://github.com/AIVIETNAM-AIO-thuhuynhtran05/ITB-Round-2-Customer-Financial-Health-Engagement-Scoring). Làm hai project, mình nhận ra gần như mọi chi tiết của RFM đều là một lựa chọn: tính trong bao lâu, đơn nào được tính, tiền tính theo số nào, ngưỡng đặt ở đâu. Mỗi ngành chọn khác nhau, vì chu kỳ mua và cách doanh nghiệp kiếm tiền khác nhau.
+Mình dùng RFM ở ba project: [kho dữ liệu e-commerce](https://github.com/AIVIETNAM-AIO-thuhuynhtran05/E-commerce-Data-Warehouse-and-Customer-Analytics), [Vin Datathon](https://github.com/AIVIETNAM-AIO-thuhuynhtran05/Vin-Datathon) về một doanh nghiệp thời trang online, và [vay tiêu dùng ở cuộc thi ITB](https://github.com/AIVIETNAM-AIO-thuhuynhtran05/ITB-Round-2-Customer-Financial-Health-Engagement-Scoring). Làm ba project, mình nhận ra gần như mọi chi tiết của RFM đều là một lựa chọn: tính trong bao lâu, đơn nào được tính, tiền tính theo số nào, ngưỡng đặt ở đâu. Mỗi ngành chọn khác nhau, vì chu kỳ mua và cách doanh nghiệp kiếm tiền khác nhau.
 
 Bài này ghi lại các lựa chọn đó, cách một số ngành định nghĩa RFM, và cách kiểm tra một định nghĩa có dùng được không.
 
@@ -35,6 +35,8 @@ Mỗi chỉ số được chấm điểm từ 1 đến 5, rồi tổ hợp đi�
 | Cách gắn tên nhóm | 6 đến 11 nhóm trên lưới R × F, M dùng để ưu tiên | Doanh nghiệp có bao nhiêu chiến dịch chăm sóc khác nhau |
 
 Trong project e-commerce, mình chọn: xét toàn bộ 2021–2025, ngày mốc là ngày đơn cuối cùng, chỉ tính đơn paid, shipped, delivered, M là tổng tiền khách trả. F dùng ngưỡng cố định 1, 2, 3–4, 5–7, 8+ đơn vì số đơn nhỏ và rời rạc. R và M chia theo phân vị vì dữ liệu giả lập không có ngưỡng nào do business đặt.
+
+Ở Vin Datathon, M là tiền khách trả trừ tiền hoàn của đơn, vì ngành thời trang trả hàng nhiều. RFM không chấm điểm 1–5 mà dùng làm đầu vào cho K-Means. Khách đăng ký nhưng chưa có đơn nào thì không tính RFM, được xếp riêng vào nhóm chưa mua.
 
 ## Lựa chọn quan trọng nhất: thế nào là "lâu không mua"
 
