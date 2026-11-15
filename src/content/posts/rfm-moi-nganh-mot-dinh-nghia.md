@@ -23,6 +23,16 @@ RFM chia khách hàng theo ba chỉ số:
 
 Mỗi chỉ số được chấm điểm từ 1 đến 5, rồi tổ hợp điểm được gắn tên nhóm. Ví dụ, R cao và F cao là Champions (khách tốt nhất), R thấp nhưng F cao là At risk (từng mua nhiều nhưng lâu rồi không quay lại).
 
+Một cách chia hay gặp là 11 nhóm, ví dụ trong [bài của Tomorrow Marketers](https://blog.tomorrowmarketers.org/phan-tich-rfm-la-gi/). Có thể gom lại thành các nhóm chính như sau:
+
+| Nhóm | Đặc điểm | Hướng chăm sóc |
+|---|---|---|
+| **Champions** | Mua gần đây, mua thường xuyên, chi nhiều | Chương trình khách hàng thân thiết, gợi ý sản phẩm giá trị cao hơn; không cần giảm giá |
+| **Loyal, Potential Loyalist** | Mua thường xuyên, hoặc mới mua và đã mua hơn một lần | Ưu đãi khi đơn vượt một mức giá trị, chương trình giới thiệu bạn bè |
+| **Recent, Promising** | Mới mua nhưng chưa mua thường xuyên | Cảm ơn và xin ý kiến sau đơn đầu, gợi ý sản phẩm liên quan |
+| **Needing Attention, At Risk, Can't Lose Them** | Từng mua nhiều nhưng lâu chưa quay lại | Hỏi lý do khách không quay lại; đưa ra giá trị phù hợp thay vì giảm giá đại trà |
+| **About to Sleep, Hibernating, Lost** | Lâu không mua, trước đó mua ít và chi ít | Kênh chi phí thấp như email, retargeting; ưu đãi ngắn hạn |
+
 ## Những chỗ cần được định nghĩa
 
 | Lựa chọn | Các cách thường gặp | Phụ thuộc vào |
@@ -32,7 +42,7 @@ Mỗi chỉ số được chấm điểm từ 1 đến 5, rồi tổ hợp đi�
 | Thế nào là một lần mua | Đơn đã thanh toán, đã giao, có trừ đơn hoàn hay không | Quy tắc ghi nhận doanh thu của doanh nghiệp |
 | M tính theo | Doanh thu thuần, tổng tiền khách trả (gồm thuế, phí ship), hoặc lợi nhuận | Doanh nghiệp quan tâm doanh số hay lợi nhuận. Ngành biên lợi nhuận khác nhau nhiều giữa các sản phẩm thì nên dùng lợi nhuận. |
 | Cách chấm điểm | Chia theo phân vị (mỗi mức 20% khách), hoặc ngưỡng cố định | Ngưỡng cố định ổn định qua các tháng và dễ giải thích. Phân vị tự điều chỉnh theo dữ liệu nhưng ngưỡng đổi mỗi lần chạy. |
-| Cách gắn tên nhóm | 6 đến 11 nhóm trên lưới R × F, M dùng để ưu tiên | Doanh nghiệp có bao nhiêu chiến dịch chăm sóc khác nhau |
+| Cách gắn tên nhóm | 6 đến 11 nhóm trên lưới R × F, M dùng để ưu tiên; hoặc phân cụm K-Means trên giá trị R, F, M rồi đặt tên từng cụm | Doanh nghiệp có bao nhiêu chiến dịch chăm sóc khác nhau |
 
 Trong project e-commerce, mình chọn: xét toàn bộ 2021–2025, ngày mốc là ngày đơn cuối cùng, chỉ tính đơn paid, shipped, delivered, M là tổng tiền khách trả. F dùng ngưỡng cố định 1, 2, 3–4, 5–7, 8+ đơn vì số đơn nhỏ và rời rạc. R và M chia theo phân vị vì dữ liệu giả lập không có ngưỡng nào do business đặt.
 
@@ -46,15 +56,29 @@ Một cách đơn giản là tính khoảng cách trung vị giữa hai lần mu
 
 ## RFM theo từng ngành
 
-| Ngành | Chu kỳ mua thường gặp | R | F | M | Chú ý |
-|---|---|---|---|---|---|
-| Siêu thị, tạp hóa, F&B | Hằng tuần | Tính theo tuần; 30 ngày không mua đã đáng chú ý | Số lần mua mỗi tháng | Doanh thu, hoặc lợi nhuận gộp vì biên mỗi nhóm hàng khác nhau | Khách mua đều nhưng giá trị nhỏ, F quan trọng hơn M |
-| Thời trang, mỹ phẩm | Vài tháng một lần | Ngưỡng thường từ 3 đến 6 tháng | Số đơn trong 12 tháng | Doanh thu thuần, trừ hàng trả | Tỷ lệ trả hàng cao, không trừ đơn hoàn thì M bị thổi lên |
-| Điện tử, nội thất | Vài năm một lần | 1 năm không mua là bình thường; R ít giá trị | Thường chỉ 1–2 lần, F gần như không phân biệt được khách | Doanh thu, kèm bảo hành và phụ kiện | Hay thay F bằng mua kèm phụ kiện hoặc dịch vụ sau bán |
-| Sàn thương mại điện tử đa ngành | Khác nhau theo ngành hàng | Nên tính riêng theo ngành hàng, hoặc so với nhịp mua của chính khách | Số đơn | Doanh thu thuần hoặc phí sàn thu được | Gộp mọi ngành hàng thì ngưỡng R không hợp với nhóm nào |
-| Thuê bao (phần mềm, viễn thông, streaming) | Trả tiền định kỳ tự động | Không dùng ngày thanh toán; thay bằng lần sử dụng gần nhất | Tần suất sử dụng (số lần đăng nhập, số phút dùng) | Doanh thu định kỳ mỗi tháng (MRR) | Khách vẫn trả tiền nhưng không dùng là dấu hiệu sắp hủy |
-| Ngân hàng bán lẻ, thẻ | Giao dịch liên tục | Lần giao dịch gần nhất | Số giao dịch mỗi tháng | Phí và lãi thu được, hoặc số dư bình quân | Khách nhiều giao dịch nhỏ có thể mang lại ít hơn khách ít giao dịch nhưng số dư lớn |
-| Vay tiêu dùng | Theo kỳ hạn khoản vay, 6–36 tháng | Tính từ ngày tất toán khoản gần nhất | Số khoản vay đã giải ngân | Lợi nhuận sau tổn thất dự kiến | Bắt buộc thêm chiều rủi ro trả nợ (xem phần dưới) |
+Mỗi ngành có chu kỳ mua riêng, nên cần chú ý những điểm khác nhau:
+
+| Ngành | Chu kỳ mua thường gặp | Chú ý |
+|---|---|---|
+| **Siêu thị, tạp hóa, F&B** | Hằng tuần | Khách mua đều nhưng giá trị nhỏ, F quan trọng hơn M |
+| **Thời trang, mỹ phẩm** | Vài tháng một lần | Tỷ lệ trả hàng cao, không trừ đơn hoàn thì M bị thổi lên |
+| **Điện tử, nội thất** | Vài năm một lần | Hay thay F bằng mua kèm phụ kiện hoặc dịch vụ sau bán |
+| **Sàn thương mại điện tử đa ngành** | Khác nhau theo ngành hàng | Gộp mọi ngành hàng thì ngưỡng R không hợp với nhóm nào |
+| **Thuê bao (phần mềm, viễn thông, streaming)** | Trả tiền định kỳ tự động | Khách vẫn trả tiền nhưng không dùng là dấu hiệu sắp hủy |
+| **Ngân hàng bán lẻ, thẻ** | Giao dịch liên tục | Khách nhiều giao dịch nhỏ có thể mang lại ít hơn khách ít giao dịch nhưng số dư lớn |
+| **Vay tiêu dùng** | Theo kỳ hạn khoản vay, 6–36 tháng | Bắt buộc thêm chiều rủi ro trả nợ (xem phần dưới) |
+
+Từ đó, R, F, M được tính như sau:
+
+| Ngành | R | F | M |
+|---|---|---|---|
+| **Siêu thị, tạp hóa, F&B** | Tính theo tuần; 30 ngày không mua đã đáng chú ý | Số lần mua mỗi tháng | Doanh thu, hoặc lợi nhuận gộp vì biên mỗi nhóm hàng khác nhau |
+| **Thời trang, mỹ phẩm** | Ngưỡng thường từ 3 đến 6 tháng | Số đơn trong 12 tháng | Doanh thu thuần, trừ hàng trả |
+| **Điện tử, nội thất** | 1 năm không mua là bình thường; R ít giá trị | Thường chỉ 1–2 lần, F gần như không phân biệt được khách | Doanh thu, kèm bảo hành và phụ kiện |
+| **Sàn thương mại điện tử đa ngành** | Nên tính riêng theo ngành hàng, hoặc so với nhịp mua của chính khách | Số đơn | Doanh thu thuần hoặc phí sàn thu được |
+| **Thuê bao (phần mềm, viễn thông, streaming)** | Không dùng ngày thanh toán; thay bằng lần sử dụng gần nhất | Tần suất sử dụng (số lần đăng nhập, số phút dùng) | Doanh thu định kỳ mỗi tháng (MRR) |
+| **Ngân hàng bán lẻ, thẻ** | Lần giao dịch gần nhất | Số giao dịch mỗi tháng | Phí và lãi thu được, hoặc số dư bình quân |
+| **Vay tiêu dùng** | Tính từ ngày tất toán khoản gần nhất | Số khoản vay đã giải ngân | Lợi nhuận sau tổn thất dự kiến |
 
 ## Vay tiêu dùng: RFM phải đi kèm rủi ro
 
@@ -128,6 +152,13 @@ Tách hai yếu tố bằng cách chỉ so khách có cùng số đơn trong 202
 
 Lý do nằm ở dữ liệu giả lập: mỗi khách được gán một tốc độ mua, và các đơn rơi ngẫu nhiên theo tốc độ đó. Khách không có giai đoạn chán rồi bỏ đi. Với dữ liệu thật, kết quả có thể khác, nhưng bước so trong cùng nhóm tần suất vẫn cần làm trước khi kết luận R có tác dụng.
 
+## Hạn chế của RFM
+
+- RFM chỉ dùng ba chỉ số hành vi trong quá khứ. Nó cho biết khách đang ở nhóm nào, không cho biết vì sao khách mua hay bỏ đi.
+- RFM không tính các yếu tố bên ngoài như khuyến mãi trước đó hay mùa vụ. Khách mua nhiều trong một đợt sale lớn có thể bị xếp vào nhóm tốt hơn thực tế.
+- Khách chưa mua lần nào không có RFM, nên cần một cách phân nhóm khác cho họ.
+- Nhóm điểm thấp vẫn có thể có khách tiềm năng, dễ bị bỏ qua nếu chỉ nhìn điểm.
+
 ## Khi định nghĩa RFM cho một doanh nghiệp
 
 - Hỏi chu kỳ mua của ngành, rồi đo khoảng cách giữa hai lần mua trong dữ liệu để đặt ngưỡng R.
@@ -136,3 +167,5 @@ Lý do nằm ở dữ liệu giả lập: mỗi khách được gán một tốc
 - Backtest trước khi dùng nhãn nhóm để chạy chiến dịch.
 
 Học tới đâu mình cập nhật tới đó nha!
+
+**Tham khảo:** [Phân tích RFM là gì và các bước phân khúc khách hàng theo RFM](https://blog.tomorrowmarketers.org/phan-tich-rfm-la-gi/), Tomorrow Marketers.
