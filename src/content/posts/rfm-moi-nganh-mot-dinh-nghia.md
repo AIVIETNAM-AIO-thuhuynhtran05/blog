@@ -7,7 +7,7 @@ section: 'Phân tích khách hàng'
 tags: [rfm, customer-analytics, segmentation]
 ---
 
-Trong [project kho dữ liệu e-commerce](https://github.com/AIVIETNAM-AIO-thuhuynhtran05/E-commerce-Data-Warehouse-and-Customer-Analytics), mình chia khách hàng theo RFM. Khi viết phần quy tắc nghiệp vụ, mình nhận ra gần như mọi chi tiết của RFM đều là một lựa chọn: tính trong bao lâu, đơn nào được tính, tiền tính theo số nào, ngưỡng đặt ở đâu. Mỗi ngành chọn khác nhau, vì chu kỳ mua và cách doanh nghiệp kiếm tiền khác nhau.
+Mình dùng RFM ở cả [project kho dữ liệu e-commerce](https://github.com/AIVIETNAM-AIO-thuhuynhtran05/E-commerce-Data-Warehouse-and-Customer-Analytics) và [project vay tiêu dùng ở cuộc thi ITB](https://github.com/AIVIETNAM-AIO-thuhuynhtran05/ITB-Round-2-Customer-Financial-Health-Engagement-Scoring). Làm hai project, mình nhận ra gần như mọi chi tiết của RFM đều là một lựa chọn: tính trong bao lâu, đơn nào được tính, tiền tính theo số nào, ngưỡng đặt ở đâu. Mỗi ngành chọn khác nhau, vì chu kỳ mua và cách doanh nghiệp kiếm tiền khác nhau.
 
 Bài này ghi lại các lựa chọn đó, cách một số ngành định nghĩa RFM, và cách kiểm tra một định nghĩa có dùng được không.
 
@@ -71,6 +71,8 @@ Vì vậy định nghĩa lại cả ba chỉ số:
 | M | Tổng tiền đã chi | Lãi thu được trừ chi phí vốn và tổn thất dự kiến. Khách vay 100 triệu rồi không trả gây lỗ, còn khách vay 10 triệu và trả đủ thì có lãi. |
 
 Nếu dùng RFM nguyên bản, khách giải ngân 18 tháng trước với kỳ hạn 24 tháng, vẫn trả đều mỗi tháng, sẽ bị chấm R thấp và xếp vào nhóm ngủ đông.
+
+Trong project ITB, nhóm mình cũng không dùng RFM nguyên bản. F được đo bằng số tháng có hoạt động và số hợp đồng ký trong 24 tháng, còn RFM xếp hạng đơn giản chỉ dùng làm mốc so sánh. Khách vừa kết thúc khoản vay có khả năng vay mới cao gấp 1,64 lần, nên thời điểm tất toán quan trọng hơn ngày giải ngân.
 
 Chiều thứ tư là hành vi trả nợ:
 
