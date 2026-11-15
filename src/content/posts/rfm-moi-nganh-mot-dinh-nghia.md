@@ -23,7 +23,7 @@ RFM chia khách hàng theo ba chỉ số:
 
 Mỗi chỉ số được chấm điểm từ 1 đến 5, rồi tổ hợp điểm được gắn tên nhóm. Ví dụ, R cao và F cao là Champions (khách tốt nhất), R thấp nhưng F cao là At risk (từng mua nhiều nhưng lâu rồi không quay lại).
 
-Một cách chia hay gặp là 11 nhóm, ví dụ trong [bài của Tomorrow Marketers](https://blog.tomorrowmarketers.org/phan-tich-rfm-la-gi/). Có thể gom lại thành các nhóm chính như sau:
+Một cách chia hay gặp là 11 nhóm. Có thể gom lại thành các nhóm chính như sau:
 
 | Nhóm | Đặc điểm | Hướng chăm sóc |
 |---|---|---|
@@ -167,5 +167,3 @@ Lý do nằm ở dữ liệu giả lập: mỗi khách được gán một tốc
 - Backtest trước khi dùng nhãn nhóm để chạy chiến dịch.
 
 Học tới đâu mình cập nhật tới đó nha!
-
-**Tham khảo:** [Phân tích RFM là gì và các bước phân khúc khách hàng theo RFM](https://blog.tomorrowmarketers.org/phan-tich-rfm-la-gi/), Tomorrow Marketers.
