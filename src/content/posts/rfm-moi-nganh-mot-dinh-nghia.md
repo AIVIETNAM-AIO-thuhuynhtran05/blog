@@ -122,15 +122,31 @@ Ngành này cũng có các phân tích riêng thay cho cohort của bán lẻ:
 
 Chú ý: ngành vay chịu quản lý chặt về dữ liệu cá nhân và hoạt động chào vay. Phân khúc dùng cho chiến dịch phải qua bộ phận quản lý rủi ro và pháp chế, không chỉ dựa vào điểm số.
 
-## Định nghĩa xong vẫn phải kiểm tra
+## Recency và Frequency khác nhau thế nào
 
-Định nghĩa nào cũng phải trả lời được câu hỏi: nhóm bị gắn nhãn At risk có thật sự mua ít đi về sau không? Cách kiểm tra là backtest:
+Hai chỉ số này dễ bị nhầm vì cùng nói về việc khách mua hàng, nhưng trả lời hai câu hỏi khác nhau:
 
-1. Chọn một ngày mốc trong quá khứ, chỉ dùng dữ liệu trước ngày đó để tính RFM.
-2. Xem hành vi thật của từng nhóm sau ngày mốc.
-3. So trong cùng nhóm tần suất, để biết mỗi chỉ số có thêm thông tin riêng hay chỉ lặp lại chỉ số khác.
+- **Recency** cho biết khách còn đang mua không: lần mua gần nhất cách đây bao lâu.
+- **Frequency** cho biết khách mua đều tới mức nào: trong một khoảng thời gian, khách mua bao nhiêu lần.
 
-Mình làm thử với dữ liệu e-commerce, ngày mốc 31/12/2023, theo dõi số đơn trong 2024–2025:
+Ví dụ, lấy ngày mốc là 30/6:
+
+- Khách A mua 3 lần trong tháng 1, rồi từ đó không mua nữa. A có F cao nhưng R thấp, vì đã 5 tháng không quay lại.
+- Khách B chỉ mua 1 lần, vào ngày 28/6. B có R cao nhưng F thấp.
+
+Nếu chỉ nhìn F thì A tốt hơn B, còn nếu chỉ nhìn R thì B tốt hơn A. Thật ra A từng là khách mua nhiều nhưng có thể đã bỏ đi, còn B là khách mới, chưa biết có quay lại không. Cần cả hai chỉ số mới thấy được điều này: A thuộc nhóm At risk, B thuộc nhóm khách mới.
+
+Hai chỉ số này cũng không hoàn toàn tách rời. Khách mua càng nhiều thì càng dễ có một đơn gần đây, nên R và F thường đi cùng nhau. Khi thấy khách có R tốt mua nhiều hơn về sau, chưa chắc là nhờ R; có thể chỉ vì họ vốn là khách mua nhiều. Phần dưới mình kiểm tra điều này.
+
+## Kiểm tra định nghĩa bằng backtest
+
+Định nghĩa xong, mình muốn biết nhóm At risk có thật sự mua ít đi về sau không. Cách làm là backtest:
+
+1. Chọn một ngày trong quá khứ làm mốc, chỉ dùng dữ liệu trước ngày đó để tính RFM.
+2. Xem sau ngày mốc, mỗi nhóm thật sự mua bao nhiêu.
+3. So những khách có cùng tần suất với nhau, để xem R có cho thêm thông tin không.
+
+Mình thử với dữ liệu e-commerce, lấy mốc 31/12/2023 và đếm số đơn của mỗi khách trong 2024–2025:
 
 | Lần mua gần nhất | Số khách | Số đơn TB trong 2024–2025 |
 |---|---|---|
@@ -138,9 +154,9 @@ Mình làm thử với dữ liệu e-commerce, ngày mốc 31/12/2023, theo dõi
 | 91–365 ngày | 1.872 | 2,93 |
 | Hơn 365 ngày | 1.930 | 2,30 |
 
-Bảng này có vẻ đúng lý thuyết: khách mua gần đây mua nhiều gấp đôi. Nhưng ba nhóm khác nhau về tần suất ngay từ đầu. Số đơn trung bình trong 2021–2023 của ba nhóm lần lượt là 3,40, 2,24 và 1,45. Khách mua 20 đơn trong 3 năm gần như chắc chắn có một đơn trong 90 ngày cuối, nên nhóm "mua gần đây" chủ yếu là khách mua nhiều. Tần suất ảnh hưởng tới cả recency lẫn số đơn về sau, làm hai thứ trông như có quan hệ.
+Nhìn bảng thì khách mua gần đây mua nhiều gần gấp đôi khách lâu không mua. Nhưng ba nhóm này vốn đã khác nhau từ trước: số đơn trung bình trong 2021–2023 lần lượt là 3,40, 2,24 và 1,45. Khách mua nhiều thì dễ có một đơn trong 90 ngày cuối, nên nhóm "mua gần đây" phần lớn là khách mua nhiều.
 
-Tách hai yếu tố bằng cách chỉ so khách có cùng số đơn trong 2021–2023:
+Vì vậy mình chỉ so những khách có cùng số đơn trong 2021–2023:
 
 | Số đơn 2021–2023 | Mua trong 90 ngày | 91–365 ngày | Hơn 365 ngày |
 |---|---|---|---|
@@ -148,9 +164,9 @@ Tách hai yếu tố bằng cách chỉ so khách có cùng số đơn trong 202
 | 2–3 đơn | 2,76 | 2,67 | 2,74 |
 | 4–6 đơn | 4,77 | 4,93 | 3,93 (55 khách) |
 
-Đọc theo cột, số đơn về sau tăng rõ theo tần suất. Đọc theo hàng, trong cùng mức tần suất, khách lâu không mua vẫn mua lại như khách vừa mua. Trong dữ liệu này, R không thêm thông tin khi đã biết F. M cũng gần như trùng F, vì giá trị mỗi đơn của một khách giữa hai giai đoạn gần như không tương quan (hệ số 0,01).
+Mỗi hàng là những khách có cùng số đơn trước đó. Trong cùng một hàng, khách lâu không mua vẫn mua lại gần bằng khách vừa mua. Còn đi từ hàng trên xuống hàng dưới thì số đơn về sau tăng rõ. Nghĩa là trong dữ liệu này, biết F rồi thì R không cho thêm thông tin. M cũng gần như trùng với F, vì giá trị mỗi đơn của một khách ở hai giai đoạn gần như không liên quan (hệ số tương quan 0,01).
 
-Lý do nằm ở dữ liệu giả lập: mỗi khách được gán một tốc độ mua, và các đơn rơi ngẫu nhiên theo tốc độ đó. Khách không có giai đoạn chán rồi bỏ đi. Với dữ liệu thật, kết quả có thể khác, nhưng bước so trong cùng nhóm tần suất vẫn cần làm trước khi kết luận R có tác dụng.
+Mình nghĩ lý do nằm ở dữ liệu giả lập: mỗi khách được gán sẵn một tốc độ mua, rồi đơn hàng được tạo ngẫu nhiên theo tốc độ đó, nên không có khách nào chán rồi bỏ đi. Với dữ liệu thật, kết quả có thể khác. Nhưng trước khi kết luận R có tác dụng, mình vẫn nên so trong cùng nhóm tần suất như trên.
 
 ## Hạn chế của RFM
 
