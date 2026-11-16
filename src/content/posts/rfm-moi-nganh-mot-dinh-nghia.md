@@ -23,7 +23,15 @@ RFM chia khách hàng theo ba chỉ số:
 
 Mỗi chỉ số được chấm điểm từ 1 đến 5, rồi tổ hợp điểm được gắn tên nhóm. Ví dụ, R cao và F cao là Champions (khách tốt nhất), R thấp nhưng F cao là At risk (từng mua nhiều nhưng lâu rồi không quay lại).
 
-Một cách chia hay gặp là 11 nhóm. Có thể gom lại thành các nhóm chính như sau:
+Làm RFM thường gồm năm bước:
+
+1. Tính giá trị R, F, M của từng khách. Đây là số gốc: số ngày, số đơn, số tiền.
+2. Đổi giá trị thành điểm từ 1 đến 5.
+3. Gắn tên nhóm cho các tổ hợp điểm.
+4. Vẽ biểu đồ để xem mỗi nhóm lớn cỡ nào, ví dụ treemap trong Power BI hoặc Tableau.
+5. Chọn hành động cho từng nhóm.
+
+Ba chỉ số, mỗi chỉ số 5 mức, cho ra 125 tổ hợp. Con số này quá nhiều để mỗi tổ hợp có một chiến dịch riêng. Cách hay dùng là lấy trung bình điểm F và M làm một trục, R làm trục còn lại, rồi chia lưới 5 × 5 thành các vùng. Mỗi vùng là một nhóm. Một cách chia hay gặp là 11 nhóm, có thể gom lại thành các nhóm chính như sau:
 
 | Nhóm | Đặc điểm | Hướng chăm sóc |
 |---|---|---|
@@ -32,6 +40,8 @@ Một cách chia hay gặp là 11 nhóm. Có thể gom lại thành các nhóm c
 | **Recent, Promising** | Mới mua nhưng chưa mua thường xuyên | Cảm ơn và xin ý kiến sau đơn đầu, gợi ý sản phẩm liên quan |
 | **Needing Attention, At Risk, Can't Lose Them** | Từng mua nhiều nhưng lâu chưa quay lại | Hỏi lý do khách không quay lại; đưa ra giá trị phù hợp thay vì giảm giá đại trà |
 | **About to Sleep, Hibernating, Lost** | Lâu không mua, trước đó mua ít và chi ít | Kênh chi phí thấp như email, retargeting; ưu đãi ngắn hạn |
+
+Mục tiêu chung là tăng tỷ lệ khách ở nhóm Champions và giảm các nhóm phía dưới. Khi chạy chiến dịch, nên thử trên một nhóm nhỏ trước, theo dõi tỷ lệ mở và tỷ lệ click nếu gửi email, rồi mới mở rộng.
 
 ## Những chỗ cần được định nghĩa
 
@@ -43,6 +53,12 @@ Một cách chia hay gặp là 11 nhóm. Có thể gom lại thành các nhóm c
 | M tính theo | Doanh thu thuần, tổng tiền khách trả (gồm thuế, phí ship), hoặc lợi nhuận | Doanh nghiệp quan tâm doanh số hay lợi nhuận. Ngành biên lợi nhuận khác nhau nhiều giữa các sản phẩm thì nên dùng lợi nhuận. |
 | Cách chấm điểm | Chia theo phân vị (mỗi mức 20% khách), hoặc ngưỡng cố định | Ngưỡng cố định ổn định qua các tháng và dễ giải thích. Phân vị tự điều chỉnh theo dữ liệu nhưng ngưỡng đổi mỗi lần chạy. |
 | Cách gắn tên nhóm | 6 đến 11 nhóm trên lưới R × F, M dùng để ưu tiên; hoặc phân cụm K-Means trên giá trị R, F, M rồi đặt tên từng cụm | Doanh nghiệp có bao nhiêu chiến dịch chăm sóc khác nhau |
+
+### Ba cách chấm điểm
+
+- **Ngưỡng cố định.** Business đặt mốc cho từng mức, ví dụ mua trong 30 ngày được 5 điểm R. Mốc phụ thuộc vào ngành. Hàng giá trị nhỏ, mua thường xuyên như cà phê, kem đánh răng thì tính theo ngày hoặc tuần. Hàng giá trị lớn, cân nhắc lâu như ô tô, đồ điện gia dụng thì tính theo năm. Đặt sai mốc thì xếp sai khách.
+- **Phân vị.** Sắp xếp khách theo từng chỉ số rồi chia thành 5 phần có số khách bằng nhau. Cách này không cần hiểu sâu về ngành, nhưng khoảng giá trị của mỗi mức không đều nhau.
+- **K-Means.** Dùng thẳng giá trị R, F, M thay vì điểm, để thuật toán tự chia cụm. Số cụm chọn bằng elbow hoặc silhouette. M thường lệch nhiều nên cần biến đổi, ví dụ lấy log, rồi chuẩn hóa trước. Phân cụm xong vẫn phải xem đặc điểm từng cụm để đặt tên. Vin Datathon dùng cách này.
 
 Trong project e-commerce, mình chọn: xét toàn bộ 2021–2025, ngày mốc là ngày đơn cuối cùng, chỉ tính đơn paid, shipped, delivered, M là tổng tiền khách trả. F dùng ngưỡng cố định 1, 2, 3–4, 5–7, 8+ đơn vì số đơn nhỏ và rời rạc. R và M chia theo phân vị vì dữ liệu giả lập không có ngưỡng nào do business đặt.
 
@@ -79,6 +95,8 @@ Từ đó, R, F, M được tính như sau:
 | **Thuê bao (phần mềm, viễn thông, streaming)** | Không dùng ngày thanh toán; thay bằng lần sử dụng gần nhất | Tần suất sử dụng (số lần đăng nhập, số phút dùng) | Doanh thu định kỳ mỗi tháng (MRR) |
 | **Ngân hàng bán lẻ, thẻ** | Lần giao dịch gần nhất | Số giao dịch mỗi tháng | Phí và lãi thu được, hoặc số dư bình quân |
 | **Vay tiêu dùng** | Tính từ ngày tất toán khoản gần nhất | Số khoản vay đã giải ngân | Lợi nhuận sau tổn thất dự kiến |
+
+Với thuê bao, đếm F theo số lần thanh toán dễ hiểu sai. Hai khách cùng đăng ký một tạp chí 100.000 đồng mỗi tháng: một người trả theo tháng, một người trả một lần cho cả năm. Cả hai có M là 1,2 triệu, nhưng người đầu có F = 12, người sau có F = 1, dù mức gắn bó có thể như nhau. Vì vậy ngành này đo F bằng mức sử dụng.
 
 ## Vay tiêu dùng: RFM phải đi kèm rủi ro
 
@@ -221,6 +239,13 @@ Khi backtest, dữ liệu trước ngày mốc phải đúng như lúc đó. Ví
 - RFM không tính các yếu tố bên ngoài như khuyến mãi trước đó hay mùa vụ. Khách mua nhiều trong một đợt sale lớn có thể bị xếp vào nhóm tốt hơn thực tế.
 - Khách chưa mua lần nào không có RFM, nên cần một cách phân nhóm khác cho họ.
 - Nhóm điểm thấp vẫn có thể có khách tiềm năng, dễ bị bỏ qua nếu chỉ nhìn điểm.
+
+## Làm RFM bằng công cụ gì
+
+- **Excel, Google Sheets:** R là ngày mốc trừ ngày mua gần nhất (tìm bằng MAXIFS), F đếm bằng COUNTIF, M cộng bằng SUMIF. Chia phân vị dùng PERCENTILE hoặc RANK, gắn tên nhóm dùng IFS. Cách này hợp với dữ liệu nhỏ, nhưng tính tay dễ sai.
+- **SQL, Python:** hợp khi dữ liệu lớn và cần chạy lại định kỳ. Ở project e-commerce, mình tính RFM trong model `mart_customer_360` của dbt.
+- **Power BI, Tableau:** vẽ treemap để thấy nhóm nào đông, nhóm nào mang lại nhiều doanh thu.
+- **Phần mềm CRM:** một số phần mềm có sẵn tính năng tính điểm RFM.
 
 ## Khi định nghĩa RFM cho một doanh nghiệp
 
