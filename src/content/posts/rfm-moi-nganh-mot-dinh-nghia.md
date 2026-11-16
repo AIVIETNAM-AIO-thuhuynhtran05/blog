@@ -168,6 +168,53 @@ Mỗi hàng là những khách có cùng số đơn trước đó. Trong cùng m
 
 Mình nghĩ lý do nằm ở dữ liệu giả lập: mỗi khách được gán sẵn một tốc độ mua, rồi đơn hàng được tạo ngẫu nhiên theo tốc độ đó, nên không có khách nào chán rồi bỏ đi. Với dữ liệu thật, kết quả có thể khác. Nhưng trước khi kết luận R có tác dụng, mình vẫn nên so trong cùng nhóm tần suất như trên.
 
+## Những chỗ dễ bị bias
+
+Ngoài chuyện R bị F ảnh hưởng như ở trên, còn vài chỗ khác dễ làm kết quả bị lệch.
+
+### Khách mới có ít thời gian để mua
+
+Lấy ngày mốc 31/12/2025:
+
+- Khách X mua lần đầu ngày 01/11/2025, đến nay có 2 đơn.
+- Khách Y mua lần đầu tháng 01/2023, đến nay có 12 đơn.
+
+Đếm số đơn thì Y có F = 12, X có F = 2, nên X bị xếp là khách mua ít. Nhưng X mới có 2 tháng để mua, còn Y đã có 3 năm. So như vậy là chưa công bằng với X.
+
+Có ba cách xử lý:
+
+1. **Tách khách mới ra nhóm riêng.** Khách có lần mua đầu cách ngày mốc chưa tới một chu kỳ mua thì chưa chấm F. Chu kỳ mua nên lấy từ dữ liệu, ví dụ khoảng cách trung vị giữa hai lần mua. Ở dữ liệu e-commerce của mình là 132 ngày.
+2. **Đổi F thành số đơn mỗi tháng.** Y có 12 đơn trong 36 tháng, tức 0,33 đơn/tháng. Với khách rất mới, nên tính thời gian gắn bó ít nhất bằng một chu kỳ mua, nếu không khách mua 1 đơn hôm qua sẽ có F rất cao.
+3. **So trên cùng một khoảng thời gian.** Chỉ đếm số đơn trong 12 tháng đầu kể từ lần mua đầu của mỗi khách. Cách này chỉ dùng được cho khách đã gắn bó đủ 12 tháng.
+
+Mình làm cách 1 trước bằng luật, rồi mới chấm RFM cho những khách còn lại:
+
+```
+Toàn bộ khách
+│
+├─ Luật 1: chưa có đơn tạo doanh thu         → nhóm "Chưa mua"
+│
+├─ Luật 2: mua lần đầu chưa tới 1 chu kỳ     → nhóm "Khách mới"
+│
+└─ Còn lại → chấm R, F, M (hoặc K-Means)     → Champions, Loyal, At risk...
+```
+
+Luật chạy theo thứ tự, nên mỗi khách chỉ vào một nhóm. Nếu để khách mới trong tập chấm điểm, họ sẽ bị dồn vào các mức F thấp và kéo lệch ngưỡng phân vị. Với K-Means, họ có thể thành một cụm riêng chỉ vì mới, không phải vì hành vi. Vin Datathon cũng tách khách chưa mua ra trước khi phân cụm vì lý do này. Ở project ITB, nhóm Insufficient History (19% khách) cũng được xử lý riêng.
+
+Nhóm Khách mới thay đổi theo mỗi lần chạy: khách đủ một chu kỳ thì lần sau được chấm RFM như mọi người. Trong nhóm này vẫn có thể chia tiếp, ví dụ khách mới mua 1 đơn cần được nhắc mua đơn thứ hai, còn khách mới đã mua 2 đơn trở lên đã bắt đầu thành khách quen.
+
+### Nhiều khách có cùng F khi chia phân vị
+
+Phần lớn khách thường chỉ mua 1 hoặc 2 lần. Khi chia F theo phân vị, đường cắt có thể rơi vào giữa những khách cùng F = 1, nên hai khách giống hệt nhau lại có điểm khác nhau. Vì vậy ở project e-commerce, mình dùng ngưỡng cố định cho F (1, 2, 3–4, 5–7, 8+ đơn).
+
+### Đánh giá chiến dịch không có nhóm đối chứng
+
+Nhóm đang rất tốt thường kém đi một chút ở kỳ sau, còn nhóm At risk tự có một phần quay lại dù không làm gì. Nếu chỉ so trước và sau chiến dịch, chiến dịch kéo khách quay lại sẽ trông hiệu quả hơn thực tế. Gửi ưu đãi cho Champions rồi thấy họ mua nhiều cũng chưa chắc là nhờ ưu đãi, vì họ vốn đã mua nhiều. Cách tránh là giữ lại một phần khách trong mỗi nhóm không tác động để so. Ở project ITB, nhóm mình đề xuất giữ 10% khách làm nhóm đối chứng.
+
+### Dùng dữ liệu sau ngày mốc khi backtest
+
+Khi backtest, dữ liệu trước ngày mốc phải đúng như lúc đó. Ví dụ một đơn bị hoàn sau ngày mốc thì tại ngày mốc nó vẫn là đơn thành công. Nếu lấy trạng thái đơn mới nhất, kết quả backtest sẽ đẹp hơn thực tế.
+
 ## Hạn chế của RFM
 
 - RFM chỉ dùng ba chỉ số hành vi trong quá khứ. Nó cho biết khách đang ở nhóm nào, không cho biết vì sao khách mua hay bỏ đi.
