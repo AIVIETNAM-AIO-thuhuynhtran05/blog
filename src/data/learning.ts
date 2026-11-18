@@ -73,7 +73,7 @@ export const bookTrack = {
 };
 
 export const bookSections = [
-  { title: 'Tình yêu', intro: 'Cuộc sống đã vội vã rồi nên mình muốn chầm chậm ở tình yêu. Mình thích viết về tình yêu ở thời hiện đại, nhưng vẫn truyền thống.' },
+  { title: 'Tình yêu', intro: 'Cuộc sống đã vội vã rồi nên mình muốn chầm chậm ở tình yêu. Mình thích viết về tình yêu ở thời hiện đại, nhưng vẫn truyền thống.', empty: 'Đợi mình trải nghiệm rồi mình kể cho nha.' },
 ];
 
 export const trackSlugs = [...tracks, bookTrack].map((t) => t.slug) as [string, ...string[]];

@@ -22,7 +22,7 @@ const intro = trackIntros[bookTrack.slug];
       <section class="book-section">
         <SectionHead title={section.title} />
         {section.intro && <p class="section-intro">{section.intro}</p>}
-        {posts.length > 0 ? <Feed entries={posts} /> : <p class="empty">Chưa có bài.</p>}
+        {posts.length > 0 ? <Feed entries={posts} /> : <p class="empty">{section.empty ?? 'Chưa có bài.'}</p>}
       </section>
     );
   })}
