@@ -12,7 +12,7 @@ export const site = {
     'Mình chia sẻ những gì mình học và những trải nghiệm cá nhân. Như vậy mình có thể học lại một lần nữa, cũng như thỏa niềm đam mê viết lách của mình.',
   // Câu chuyện của tác giả, hiện ở trang Giới thiệu
   intro:
-    'Hello mn, mình là Anh Thư, người Quảng nhưng chưa biết nấu mì Quảng chuẩn vị. Từ một sinh viên y thích văn, thích viết và thích những gì có bằng chứng cụ thể, mình chuyển qua IT, rồi tự nhiên mê dữ liệu lúc nào không hay.',
+    'Hello mn, mình là Anh Thư. Từ một sinh viên y thích văn, thích viết và thích những gì có bằng chứng cụ thể, mình chuyển qua IT, rồi tự nhiên mê dữ liệu lúc nào không hay. À, mình là người Quảng nhưng chưa nấu được mì Quảng chuẩn vị.',
   // Bật khi bạn sẵn sàng nhận việc: hiện thêm một khối ở trang chủ
   openToWork: false,
   // Nhạc qua trình phát của YouTube, mở bằng nút ở đầu trang. start và end là giây bắt đầu và kết thúc của đoạn phát.
